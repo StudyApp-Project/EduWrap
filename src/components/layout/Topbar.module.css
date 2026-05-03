@@ -44,16 +44,22 @@
   justify-content: center;
 }
 
-.links a {
+.links a, .links :global(a) {
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 13px;
   color: var(--text-secondary);
   transition: color 0.15s;
+  text-decoration: none;
 }
 
-.links a:hover {
+.links a:hover, .links :global(a):hover {
   color: var(--text-primary);
+}
+
+.activeLink {
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--accent);
 }
 
 .actions {

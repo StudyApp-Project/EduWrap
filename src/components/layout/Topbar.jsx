@@ -1,5 +1,6 @@
 import styles from './Topbar.module.css';
 import { Bell, HelpCircle, Plus, Search, MessageSquare, FileText } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { usePanel } from '../../contexts/PanelContext';
 
@@ -15,9 +16,9 @@ export default function Topbar() {
       </div>
 
       <nav className={styles.links}>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/rooms">Study Rooms</a>
-        <a href="/notes">Notes</a>
+        <NavLink to="/dashboard" className={({ isActive }) => isActive ? styles.activeLink : ''}>Dashboard</NavLink>
+        <NavLink to="/rooms"     className={({ isActive }) => isActive ? styles.activeLink : ''}>Study Rooms</NavLink>
+        <NavLink to="/notes"     className={({ isActive }) => isActive ? styles.activeLink : ''}>Notes</NavLink>
       </nav>
 
       <div className={styles.actions}>
