@@ -6,18 +6,32 @@ import {
 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/rooms',     icon: Users,           label: 'Study Rooms' },
-  { to: '/notes',     icon: FileText,        label: 'Notes' },
-  { to: '/flashcards',icon: Layers,          label: 'Flashcards' },
-  { to: '/quiz',      icon: HelpCircle,      label: 'Quiz' },
-  { to: '/files',     icon: Folder,          label: 'Files' },
+  { to: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard'   },
+  { to: '/rooms',      icon: Users,           label: 'Study Rooms' },
+  { to: '/notes',      icon: FileText,        label: 'Notes'       },
+  { to: '/flashcards', icon: Layers,          label: 'Flashcards'  },
+  { to: '/quiz',       icon: HelpCircle,      label: 'Quiz'        },
+  { to: '/files',      icon: Folder,          label: 'Files'       },
 ];
 
 const BOTTOM_ITEMS = [
-  { to: '/profile',  icon: User,     label: 'Profile' },
+  { to: '/profile',  icon: User,     label: 'Profile'  },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
+
+function NavItem({ to, icon: Icon, label }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `${styles.navItem} ${isActive ? styles.active : ''}`
+      }
+    >
+      <Icon size={16} />
+      <span>{label}</span>
+    </NavLink>
+  );
+}
 
 export default function Sidebar() {
   return (
@@ -31,33 +45,11 @@ export default function Sidebar() {
       </div>
 
       <nav className={styles.nav}>
-        {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `${styles.navItem} ${isActive ? styles.active : ''}`
-            }
-          >
-            <Icon size={16} />
-            <span>{label}</span>
-          </NavLink>
-        ))}
+        {NAV_ITEMS.map(item => <NavItem key={item.to} {...item} />)}
       </nav>
 
       <nav className={styles.navBottom}>
-        {BOTTOM_ITEMS.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `${styles.navItem} ${isActive ? styles.active : ''}`
-            }
-          >
-            <Icon size={16} />
-            <span>{label}</span>
-          </NavLink>
-        ))}
+        {BOTTOM_ITEMS.map(item => <NavItem key={item.to} {...item} />)}
       </nav>
     </aside>
   );
