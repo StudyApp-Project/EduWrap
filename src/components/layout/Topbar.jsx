@@ -1,66 +1,86 @@
-import styles from './Topbar.module.css';
-import { Bell, HelpCircle, Plus, Search, MessageSquare, FileText } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { Bell, Search, Menu, Zap, Settings, LogOut, User as UserIcon } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
-import { usePanel } from '../../contexts/PanelContext';
+import { IconButton } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
+import { Dropdown, DropdownItem, DropdownDivider } from '../ui/Dropdown';
+import { CountBadge } from '../ui/Badge';
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
   const { user } = useUser();
-  const { chatOpen, notesOpen, toggleChat, toggleNotes } = usePanel();
 
   return (
-    <header className={styles.topbar}>
-      <div className={styles.search}>
-        <Search size={14} />
-        <input type="text" placeholder="Search..." id="topbar-search" />
+    <header className="flex items-center gap-4 px-4 h-16 border-b border-[var(--border-default)] bg-[var(--bg-elevated)]/80 backdrop-blur-md shrink-0 sticky top-0 z-30">
+      {/* Mobile menu toggle */}
+      <IconButton 
+        variant="ghost" 
+        className="lg:hidden" 
+        onClick={onMenuClick} 
+        aria-label="Toggle menu"
+      >
+        <Menu size={20} />
+      </IconButton>
+
+      {/* Global Search / Command Palette Trigger */}
+      <button 
+        onClick={onOpenCommandPalette}
+        className="flex items-center gap-2 flex-1 max-w-md px-3 py-2 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-default)] hover:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.4)] transition-all text-left text-[var(--text-muted)] group"
+      >
+        <Search size={16} className="group-hover:text-[color:oklch(0.58_0.22_var(--accent-hue))] transition-colors" />
+        <span className="flex-1 text-sm">Search or type a command...</span>
+        <div className="hidden sm:flex items-center gap-1">
+          <kbd className="px-1.5 py-0.5 rounded shadow-sm bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[10px] font-mono font-medium">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 rounded shadow-sm bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[10px] font-mono font-medium">K</kbd>
+        </div>
+      </button>
+
+      <div className="flex-1" />
+
+      {/* Streak / Gamification */}
+      <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.2)] text-[color:oklch(0.58_0.22_var(--accent-hue))] font-semibold text-xs shadow-[var(--shadow-glow)]">
+        <Zap size={14} className="fill-current" />
+        <span>12 Day Streak</span>
       </div>
 
-      <nav className={styles.links}>
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? styles.activeLink : ''}>Dashboard</NavLink>
-        <NavLink to="/rooms"     className={({ isActive }) => isActive ? styles.activeLink : ''}>Study Rooms</NavLink>
-        <NavLink to="/notes"     className={({ isActive }) => isActive ? styles.activeLink : ''}>Notes</NavLink>
-      </nav>
-
-      <div className={styles.actions}>
-        {/* Panel toggles */}
-        <button
-          id="topbar-toggle-notes"
-          onClick={toggleNotes}
-          aria-label="Toggle Notes"
-          className={notesOpen ? styles.activeToggle : ''}
-          title="Notes"
+      {/* Actions */}
+      <div className="flex items-center gap-3">
+        <Dropdown 
+          align="right"
+          trigger={
+            <div className="relative">
+              <IconButton variant="ghost" aria-label="Notifications">
+                <Bell size={18} />
+              </IconButton>
+              <div className="absolute top-1.5 right-1.5">
+                <CountBadge count={3} variant="error" size="sm" className="!text-[8px] !px-1 shadow-sm" />
+              </div>
+            </div>
+          }
         >
-          <FileText size={16} />
-        </button>
+          <div className="px-4 py-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Notifications</div>
+          <DropdownItem>New material in Physics 301</DropdownItem>
+          <DropdownItem>Alex mentioned you</DropdownItem>
+          <DropdownItem>Upcoming quiz reminder</DropdownItem>
+        </Dropdown>
 
-        <button
-          id="topbar-toggle-chat"
-          onClick={toggleChat}
-          aria-label="Toggle Chat"
-          className={chatOpen ? styles.activeToggle : ''}
-          title="Chat"
+        <div className="w-px h-6 bg-[var(--border-default)] hidden sm:block" />
+
+        <Dropdown
+          align="right"
+          trigger={
+            <div className="flex items-center gap-2 cursor-pointer p-1 rounded-full hover:bg-[var(--bg-glass)] transition-colors">
+              <Avatar initials={user.name.charAt(0)} status="online" size="sm" />
+            </div>
+          }
         >
-          <MessageSquare size={16} />
-        </button>
-
-        <div className={styles.divider} />
-
-        <button id="topbar-create" className={styles.createBtn}>
-          <Plus size={14} />
-          Create
-        </button>
-
-        <button id="topbar-notifications" aria-label="Notifications">
-          <Bell size={16} />
-        </button>
-
-        <button id="topbar-help" aria-label="Help">
-          <HelpCircle size={16} />
-        </button>
-
-        <button id="topbar-avatar" className={styles.avatar} aria-label="User menu">
-          {user.name.charAt(0)}
-        </button>
+          <div className="px-4 py-3 border-b border-[var(--border-default)] mb-1">
+            <div className="text-sm font-semibold text-[var(--text-primary)]">{user.name}</div>
+            <div className="text-xs text-[var(--text-muted)] truncate">{user.email || 'student@university.edu'}</div>
+          </div>
+          <DropdownItem icon={UserIcon}>Profile</DropdownItem>
+          <DropdownItem icon={Settings}>Account Settings</DropdownItem>
+          <DropdownDivider />
+          <DropdownItem icon={LogOut} className="text-red-500 hover:!bg-red-500/10">Log out</DropdownItem>
+        </Dropdown>
       </div>
     </header>
   );
