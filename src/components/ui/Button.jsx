@@ -2,10 +2,10 @@ import { forwardRef } from 'react';
 
 const variants = {
   primary: 'text-white hover:opacity-90',
-  secondary: 'border border-[var(--border-strong)] hover:bg-[var(--bg-glass)]',
-  ghost: 'hover:bg-[var(--bg-glass)]',
+  secondary: 'border border-(--border-strong) hover:bg-(--bg-glass)',
+  ghost: 'hover:bg-(--bg-glass)',
   danger: 'bg-red-500 text-white hover:bg-red-600',
-  outline: 'border border-[var(--border-default)] hover:border-[var(--border-strong)]',
+  outline: 'border border-(--border-default) hover:border-(--border-strong)',
 };
 
 const sizes = {

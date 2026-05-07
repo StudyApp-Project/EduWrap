@@ -28,7 +28,7 @@ export function Dropdown({ trigger, children, align = 'right' }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -5 }}
             transition={{ duration: 0.15 }}
-            className={`absolute z-50 mt-2 w-48 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-strong)] shadow-[var(--shadow-lg)] overflow-hidden ${
+            className={`absolute z-50 mt-2 w-48 rounded-xl bg-(--bg-elevated) border border-(--border-strong) shadow-(--shadow-lg) overflow-hidden ${
               align === 'right' ? 'origin-top-right right-0' : 'origin-top-left left-0'
             }`}
           >
@@ -46,14 +46,14 @@ export function DropdownItem({ children, onClick, icon: Icon, className = '' }) 
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-glass)] transition-colors ${className}`}
+      className={`w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-(--text-primary) hover:bg-(--bg-glass) transition-colors ${className}`}
     >
-      {Icon && <Icon size={16} className="text-[var(--text-muted)]" />}
+      {Icon && <Icon size={16} className="text-(--text-muted)" />}
       {children}
     </button>
   );
 }
 
 export function DropdownDivider() {
-  return <div className="h-px bg-[var(--border-default)] my-1" />;
+  return <div className="h-px bg-(--border-default) my-1" />;
 }

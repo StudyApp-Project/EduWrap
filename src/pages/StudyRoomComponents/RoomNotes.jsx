@@ -35,18 +35,18 @@ export default function RoomNotes({ roomId }) {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="flex items-center justify-between gap-3 px-4 py-2 border-b border-[var(--border-default)]" style={{ background: 'var(--bg-elevated)' }}>
-        <div className="flex items-center gap-2 flex-1 max-w-xs px-3 py-1.5 rounded-lg bg-[var(--bg-glass)] border border-[var(--border-default)]">
-          <Search size={12} className="text-[var(--text-muted)]" />
+      <header className="flex items-center justify-between gap-3 px-4 py-2 border-b border-(--border-default)" style={{ background: 'var(--bg-elevated)' }}>
+        <div className="flex items-center gap-2 flex-1 max-w-xs px-3 py-1.5 rounded-lg bg-(--bg-glass) border border-(--border-default)">
+          <Search size={12} className="text-(--text-muted)" />
           <input
             type="text"
             placeholder="Search notes..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+            className="flex-1 bg-transparent outline-none text-xs text-(--text-primary) placeholder:text-(--text-muted)"
           />
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+        <div className="flex items-center gap-1.5 text-xs text-(--text-muted)">
           {saveStatus === 'saving' && <Loader2 size={12} className="animate-spin" />}
           {saveStatus === 'saved' && <Check size={12} className="text-green-500" />}
           <span>{saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : ''}</span>
@@ -56,12 +56,12 @@ export default function RoomNotes({ roomId }) {
       <div className="flex-1 min-h-0 overflow-auto p-4">
         {searchQuery ? (
           <div>
-            <div className="text-xs font-medium text-[var(--text-muted)] mb-2">Search Results:</div>
-            <pre className="text-sm whitespace-pre-wrap text-[var(--text-secondary)] font-mono">{getFilteredContent() || 'No matches found'}</pre>
+            <div className="text-xs font-medium text-(--text-muted) mb-2">Search Results:</div>
+            <pre className="text-sm whitespace-pre-wrap text-(--text-secondary) font-mono">{getFilteredContent() || 'No matches found'}</pre>
           </div>
         ) : (
           <textarea
-            className="w-full h-full min-h-[300px] resize-none bg-transparent outline-none text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+            className="w-full h-full min-h-[300px] resize-none bg-transparent outline-none text-sm leading-relaxed text-(--text-primary) placeholder:text-(--text-muted)"
             placeholder={'Jot down shared notes for the room...\n\n💡 Use # for headings\n💡 Use - for lists'}
             value={text}
             onChange={handleTextChange}
@@ -69,7 +69,7 @@ export default function RoomNotes({ roomId }) {
         )}
       </div>
 
-      <footer className="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-default)] text-[10px] text-[var(--text-muted)]">
+      <footer className="flex items-center gap-4 px-4 py-2 border-t border-(--border-default) text-[10px] text-(--text-muted)">
         <span>{getWordCount()} words</span>
         <span>{text.length} characters</span>
       </footer>

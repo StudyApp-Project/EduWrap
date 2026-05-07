@@ -48,7 +48,7 @@ export default function Dashboard() {
           <h1 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>
             Welcome back, {user.name.split(' ')[0]}! 👋
           </h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
+          <p className="text-sm text-(--text-secondary) mt-1">
             Ready to continue your learning journey?
           </p>
         </div>
@@ -69,23 +69,23 @@ export default function Dashboard() {
           { icon: CheckCircle2, label: 'Current Level', value: user.level, color: '#22c55e' },
           { icon: Users, label: 'Study Groups', value: 12, color: '#3b82f6' },
         ].map((stat, i) => (
-          <div key={i} className="p-4 rounded-2xl border border-[var(--border-default)] transition-all hover:shadow-[var(--shadow-md)]" style={{ background: 'var(--bg-surface)' }}>
+          <div key={i} className="p-4 rounded-2xl border border-(--border-default) transition-all hover:shadow-(--shadow-md)" style={{ background: 'var(--bg-surface)' }}>
             <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: `${stat.color}15`, color: stat.color }}>
               <stat.icon size={18} />
             </div>
             <div className="text-xl font-bold">{stat.value}</div>
-            <div className="text-xs text-[var(--text-muted)]">{stat.label}</div>
+            <div className="text-xs text-(--text-muted)">{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Level Progress */}
-      <div className="p-4 rounded-2xl border border-[var(--border-default)]" style={{ background: 'var(--bg-surface)' }}>
+      <div className="p-4 rounded-2xl border border-(--border-default)" style={{ background: 'var(--bg-surface)' }}>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'oklch(0.58 0.22 var(--accent-hue) / 0.12)', color: 'oklch(0.58 0.22 var(--accent-hue))' }}>
             Level {user.level}
           </span>
-          <span className="text-xs text-[var(--text-muted)]">{user.xp.toLocaleString()} / {nextLevelXP.toLocaleString()} XP</span>
+          <span className="text-xs text-(--text-muted)">{user.xp.toLocaleString()} / {nextLevelXP.toLocaleString()} XP</span>
         </div>
         <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--bg-glass)' }}>
           <div className="h-full rounded-full transition-all duration-700" style={{ width: `${levelProgress}%`, background: 'oklch(0.58 0.22 var(--accent-hue))' }} />
@@ -95,37 +95,37 @@ export default function Dashboard() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Quick Actions */}
-        <div className="p-4 rounded-2xl border border-[var(--border-default)]" style={{ background: 'var(--bg-surface)' }}>
+        <div className="p-4 rounded-2xl border border-(--border-default)" style={{ background: 'var(--bg-surface)' }}>
           <h2 className="font-semibold mb-3">Quick Actions</h2>
           <div className="space-y-2">
             {QUICK_ACTIONS.map((action, i) => (
               <button
                 key={i}
-                className="w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-[var(--bg-glass)] group"
+                className="w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-(--bg-glass) group"
                 onClick={() => navigate(action.to)}
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${action.color}15`, color: action.color }}>
                   <action.icon size={16} />
                 </div>
                 <span className="text-sm flex-1 text-left">{action.label}</span>
-                <ArrowRight size={14} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
+                <ArrowRight size={14} className="text-(--text-muted) group-hover:text-(--text-primary) transition-colors" />
               </button>
             ))}
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="p-4 rounded-2xl border border-[var(--border-default)]" style={{ background: 'var(--bg-surface)' }}>
+        <div className="p-4 rounded-2xl border border-(--border-default)" style={{ background: 'var(--bg-surface)' }}>
           <h2 className="font-semibold mb-3">Recent Activity</h2>
           <div className="space-y-3">
             {RECENT_ACTIVITY.map((a) => (
               <div key={a.id} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--bg-glass)] text-[var(--text-secondary)]">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-(--bg-glass) text-(--text-secondary)">
                   <a.icon size={14} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm truncate">{a.title}</div>
-                  <div className="text-[10px] text-[var(--text-muted)]">{a.time}</div>
+                  <div className="text-[10px] text-(--text-muted)">{a.time}</div>
                 </div>
               </div>
             ))}
@@ -133,10 +133,10 @@ export default function Dashboard() {
         </div>
 
         {/* Upcoming Sessions */}
-        <div className="p-4 rounded-2xl border border-[var(--border-default)] lg:col-span-2" style={{ background: 'var(--bg-surface)' }}>
+        <div className="p-4 rounded-2xl border border-(--border-default) lg:col-span-2" style={{ background: 'var(--bg-surface)' }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold">Upcoming Sessions</h2>
-            <button className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" onClick={() => navigate('/rooms')}>
+            <button className="flex items-center gap-1 text-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors" onClick={() => navigate('/rooms')}>
               View All <ArrowRight size={12} />
             </button>
           </div>
@@ -144,15 +144,15 @@ export default function Dashboard() {
             {UPCOMING_SESSIONS.map((s) => (
               <button
                 key={s.id}
-                className="text-left p-4 rounded-xl border border-[var(--border-default)] transition-all hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 bg-[var(--bg-glass)]"
+                className="text-left p-4 rounded-xl border border-(--border-default) transition-all hover:shadow-(--shadow-md) hover:-translate-y-0.5 bg-(--bg-glass)"
                 onClick={() => navigate(`/room/${s.id}`)}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar size={14} style={{ color: 'oklch(0.58 0.22 var(--accent-hue))' }} />
                   <span className="text-sm font-medium">{s.title}</span>
                 </div>
-                <div className="text-xs text-[var(--text-muted)] mb-3">{s.subject}</div>
-                <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
+                <div className="text-xs text-(--text-muted) mb-3">{s.subject}</div>
+                <div className="flex items-center gap-3 text-[10px] text-(--text-muted)">
                   <span className="flex items-center gap-1"><Clock size={10} /> {s.time}</span>
                   <span className="flex items-center gap-1"><Users size={10} /> {s.members}</span>
                 </div>
@@ -162,7 +162,7 @@ export default function Dashboard() {
         </div>
 
         {/* Achievements */}
-        <div className="p-4 rounded-2xl border border-[var(--border-default)] lg:col-span-2" style={{ background: 'var(--bg-surface)' }}>
+        <div className="p-4 rounded-2xl border border-(--border-default) lg:col-span-2" style={{ background: 'var(--bg-surface)' }}>
           <h2 className="font-semibold mb-3">Achievements</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {ACHIEVEMENTS.map((a, i) => (
@@ -172,9 +172,9 @@ export default function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium">{a.title}</div>
-                  <div className="text-[10px] text-[var(--text-muted)]">{a.desc}</div>
+                  <div className="text-[10px] text-(--text-muted)">{a.desc}</div>
                 </div>
-                {!a.unlocked && <AlertCircle size={14} className="text-[var(--text-muted)]" />}
+                {!a.unlocked && <AlertCircle size={14} className="text-(--text-muted)" />}
               </div>
             ))}
           </div>

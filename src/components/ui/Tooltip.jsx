@@ -70,7 +70,7 @@ export function Tooltip({ children, content, position = 'top', delay = 300 }) {
                 zIndex: 9999,
                 ...getOriginAndTransform()
               }}
-              className="px-2.5 py-1.5 text-xs font-medium text-[var(--text-inverse)] bg-[var(--text-primary)] rounded-md shadow-sm whitespace-nowrap"
+              className="px-2.5 py-1.5 text-xs font-medium text-(--text-inverse) bg-(--text-primary) rounded-md shadow-sm whitespace-nowrap"
             >
               {content}
             </motion.div>

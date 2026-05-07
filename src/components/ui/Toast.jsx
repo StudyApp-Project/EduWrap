@@ -13,11 +13,11 @@ export function Toast({ type = 'info', message, onClose }) {
   const Icon = config.icon;
 
   return createPortal(
-    <div className={`fixed bottom-4 right-4 z-[9999] flex items-center gap-3 px-4 py-3 rounded-xl border border-[var(--border-default)] shadow-[var(--shadow-lg)] backdrop-blur-xl animate-[slideUp_0.3s_ease] ${config.bg}`}
+    <div className={`fixed bottom-4 right-4 z-[9999] flex items-center gap-3 px-4 py-3 rounded-xl border border-(--border-default) shadow-(--shadow-lg) backdrop-blur-xl animate-[slideUp_0.3s_ease] ${config.bg}`}
       style={{ background: 'var(--bg-elevated)' }}>
       <Icon size={18} className={config.color} />
       <span className="text-sm">{message}</span>
-      <button onClick={onClose} className="p-1 rounded-md hover:bg-[var(--bg-glass)] transition-colors">
+      <button onClick={onClose} className="p-1 rounded-md hover:bg-(--bg-glass) transition-colors">
         <X size={14} />
       </button>
     </div>,

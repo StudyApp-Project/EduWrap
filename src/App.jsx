@@ -11,7 +11,7 @@ import Sandbox from './pages/Sandbox';
 // Stub — built in a later phase
 function Stub({ label }) {
   return (
-    <div className="flex-1 grid place-items-center text-[var(--text-secondary)] text-sm">
+    <div className="flex-1 grid place-items-center text-(--text-secondary) text-sm">
       <p>{label} — coming soon</p>
     </div>
   );

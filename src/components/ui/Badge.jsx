@@ -1,5 +1,5 @@
 const variants = {
-  default: 'bg-[var(--bg-glass)] text-[var(--text-secondary)] border border-[var(--border-default)]',
+  default: 'bg-(--bg-glass) text-(--text-secondary) border border-(--border-default)',
   accent: 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.15)] text-[color:oklch(0.58_0.22_var(--accent-hue))] border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)]',
   success: 'bg-green-500/15 text-green-500 border border-green-500/30',
   warning: 'bg-yellow-500/15 text-yellow-600 border border-yellow-500/30',
