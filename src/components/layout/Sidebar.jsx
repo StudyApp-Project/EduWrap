@@ -1,17 +1,21 @@
-import styles from './Sidebar.module.css';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   LayoutDashboard, Users, FileText, Layers, HelpCircle,
-  Folder, User, Settings
+  Folder, User, Settings, Keyboard, X, MessageCircleQuestion,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { Tooltip } from '../ui/Tooltip';
+import { CountBadge } from '../ui/Badge';
 
 const NAV_ITEMS = [
-  { to: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard'   },
-  { to: '/rooms',      icon: Users,           label: 'Study Rooms' },
-  { to: '/notes',      icon: FileText,        label: 'Notes'       },
-  { to: '/flashcards', icon: Layers,          label: 'Flashcards'  },
-  { to: '/quiz',       icon: HelpCircle,      label: 'Quiz'        },
-  { to: '/files',      icon: Folder,          label: 'Files'       },
+  { to: '/dashboard',  icon: LayoutDashboard,       label: 'Dashboard',   shortcut: '⌘D' },
+  { to: '/rooms',      icon: Users,                 label: 'Study Rooms', shortcut: '⌘R', badge: 2 },
+  { to: '/notes',      icon: FileText,              label: 'Notes',       shortcut: '⌘N' },
+  { to: '/flashcards', icon: Layers,                label: 'Flashcards',  shortcut: '⌘F' },
+  { to: '/quiz',       icon: HelpCircle,            label: 'Quiz',        shortcut: '⌘Q' },
+  { to: '/doubts',     icon: MessageCircleQuestion, label: 'Doubts',      shortcut: '⌘B' },
+  { to: '/files',      icon: Folder,                label: 'Files',       shortcut: '⌘O' },
 ];
 
 const BOTTOM_ITEMS = [
@@ -19,38 +23,143 @@ const BOTTOM_ITEMS = [
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
-function NavItem({ to, icon: Icon, label }) {
-  return (
+function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick }) {
+  const content = (
     <NavLink
       to={to}
+      onClick={onClick}
       className={({ isActive }) =>
-        `${styles.navItem} ${isActive ? styles.active : ''}`
+        `relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 group overflow-hidden
+         ${isActive
+           ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.15)] text-[color:oklch(0.58_0.22_var(--accent-hue))] font-semibold shadow-[var(--shadow-glow)] border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)]'
+           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)] border border-transparent'
+         }`
       }
+      aria-label={`Navigate to ${label}`}
     >
-      <Icon size={16} />
-      <span>{label}</span>
+      {({ isActive }) => (
+        <>
+          {/* Active glow dot (collapsed only) */}
+          {isActive && isCollapsed && (
+            <motion.div layoutId="sidebar-active" className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[color:oklch(0.58_0.22_var(--accent-hue))] rounded-r-full" />
+          )}
+
+          <Icon size={18} className="shrink-0" aria-hidden="true" />
+          
+          {!isCollapsed && (
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex-1 truncate"
+            >
+              {label}
+            </motion.span>
+          )}
+
+          {!isCollapsed && badge && (
+            <CountBadge count={badge} className="ml-auto shrink-0" />
+          )}
+
+          {!isCollapsed && shortcut && !isActive && (
+            <span className="hidden lg:block text-[10px] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              {shortcut}
+            </span>
+          )}
+
+          {/* Badge dot for collapsed state */}
+          {isCollapsed && badge && (
+            <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[color:oklch(0.58_0.22_var(--accent-hue))] border-2 border-[var(--bg-elevated)]" />
+          )}
+        </>
+      )}
     </NavLink>
   );
+
+  if (isCollapsed) {
+    return (
+      <Tooltip content={label} position="right">
+        {content}
+      </Tooltip>
+    );
+  }
+  return content;
 }
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose, isCollapsed, toggleCollapse }) {
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <span className={styles.logoBox}>EW</span>
-        <div>
-          <div className={styles.logoTitle}>Global Workspace</div>
-          <div className={styles.logoSub}>Academic Pro</div>
+    <motion.aside
+      className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col h-screen border-r border-[var(--border-default)] shrink-0 transition-transform duration-300 ease-in-out lg:translate-x-0 bg-[var(--bg-elevated)] backdrop-blur-xl ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+      animate={{ width: isCollapsed ? 80 : 260 }}
+      transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+    >
+      {/* Header / Logo */}
+      <div className="flex items-center gap-3 px-4 h-16 border-b border-[var(--border-default)] shrink-0 overflow-hidden">
+        <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.50_0.22_var(--accent-hue))] shadow-[var(--shadow-glow)] text-white flex items-center justify-center text-sm font-bold">
+          EW
         </div>
+        
+        {!isCollapsed && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="flex-1 min-w-0"
+          >
+            <div className="text-base font-bold truncate" style={{ fontFamily: 'var(--font-display)' }}>EduWrap</div>
+            <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Workspace</div>
+          </motion.div>
+        )}
+
+        {/* Mobile close button */}
+        <button
+          className="lg:hidden p-2 rounded-lg hover:bg-[var(--bg-glass)] text-[var(--text-muted)]"
+          onClick={onClose}
+        >
+          <X size={20} />
+        </button>
       </div>
 
-      <nav className={styles.nav}>
-        {NAV_ITEMS.map(item => <NavItem key={item.to} {...item} />)}
+      {/* Main Navigation */}
+      <nav className="flex-1 flex flex-col gap-1 px-3 py-4 overflow-y-auto no-scrollbar">
+        {NAV_ITEMS.map(item => (
+          <NavItem 
+            key={item.to} 
+            {...item} 
+            isCollapsed={isCollapsed} 
+            onClick={() => { if (window.innerWidth < 1024) onClose(); }} 
+          />
+        ))}
       </nav>
 
-      <nav className={styles.navBottom}>
-        {BOTTOM_ITEMS.map(item => <NavItem key={item.to} {...item} />)}
-      </nav>
-    </aside>
+      {/* Bottom Navigation */}
+      <div className="p-3 border-t border-[var(--border-default)] flex flex-col gap-1 shrink-0">
+        {BOTTOM_ITEMS.map(item => (
+          <NavItem 
+            key={item.to} 
+            {...item} 
+            isCollapsed={isCollapsed} 
+            onClick={() => { if (window.innerWidth < 1024) onClose(); }} 
+          />
+        ))}
+
+        {/* Collapse Toggle (Desktop only) */}
+        <button
+          onClick={toggleCollapse}
+          className="hidden lg:flex items-center justify-center w-full mt-2 p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)] transition-colors border border-transparent hover:border-[var(--border-default)]"
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
+
+        {!isCollapsed && (
+          <div className="hidden lg:flex items-center gap-2 px-3 pt-3 pb-1 mt-2 text-[10px] text-[var(--text-muted)] justify-center border-t border-[var(--border-default)]">
+            <Keyboard size={12} />
+            <span>Press ⌘K for commands</span>
+          </div>
+        )}
+      </div>
+    </motion.aside>
   );
 }

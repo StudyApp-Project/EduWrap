@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext';
-import { PanelProvider } from './contexts/PanelContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AppLayout from './layouts/AppLayout';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
 import StudyRoom from './pages/StudyRoom';
+import Sandbox from './pages/Sandbox';
 
 // Stub — built in a later phase
 function Stub({ label }) {
   return (
-    <div style={{ display: 'grid', placeItems: 'center', flex: 1, color: 'var(--text-secondary)', fontSize: 14 }}>
+    <div className="flex-1 grid place-items-center text-[var(--text-secondary)] text-sm">
       <p>{label} — coming soon</p>
     </div>
   );
@@ -18,9 +19,9 @@ function Stub({ label }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <UserProvider>
-        <PanelProvider>
+    <ThemeProvider>
+      <BrowserRouter>
+        <UserProvider>
           <Routes>
             {/* Public — no AppLayout */}
             <Route path="/" element={<Landing />} />
@@ -34,16 +35,18 @@ export default function App() {
               <Route path="/notes"         element={<Stub label="Notes" />} />
               <Route path="/flashcards"    element={<Stub label="Flashcards" />} />
               <Route path="/quiz"          element={<Stub label="Quiz" />} />
+              <Route path="/doubts"        element={<Stub label="Doubts" />} />
               <Route path="/files"         element={<Stub label="Files" />} />
               <Route path="/profile"       element={<Stub label="Profile" />} />
               <Route path="/settings"      element={<Stub label="Settings" />} />
+              <Route path="/sandbox"       element={<Sandbox />} />
 
               {/* Catch-all */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>
-        </PanelProvider>
-      </UserProvider>
-    </BrowserRouter>
+        </UserProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

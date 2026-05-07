@@ -1,291 +1,107 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Upload, Video, Sparkles, File, X, ArrowLeft, UserPlus, CheckCircle2, Loader2 } from 'lucide-react';
-import styles from './StudyRoom.module.css';
+import {
+  ArrowLeft, MessageSquare, FileText, MoreVertical, Video, Sparkles, UserPlus
+} from 'lucide-react';
+import RoomChat from './StudyRoomComponents/RoomChat';
+import RoomNotes from './StudyRoomComponents/RoomNotes';
 
-// ── Mock data ────────────────────────────────────────────────
-const MOCK_ROOM = {
-  name: 'Physics Study Group',
-  subject: 'Advanced Physics 301',
-};
+const MOCK_ROOM = { name: 'Physics Study Group', subject: 'Advanced Physics 301' };
 
 const MOCK_MEMBERS = [
-  { id: 'm1', name: 'Alex R.',      initials: 'AR', status: 'online',  role: 'Host',       isYou: true  },
-  { id: 'm2', name: 'Sarah J.',     initials: 'SJ', status: 'online',  role: 'Member',     isYou: false },
-  { id: 'm3', name: 'Mike T.',      initials: 'MT', status: 'online',  role: 'Member',     isYou: false },
-  { id: 'm4', name: 'Dr. Peterson', initials: 'DP', status: 'online',  role: 'Instructor', isYou: false },
-  { id: 'm5', name: 'Lisa K.',      initials: 'LK', status: 'offline', role: 'Member',     isYou: false },
+  { id: 'm1', name: 'Alex R.', initials: 'AR', status: 'online', role: 'Host', isYou: true, bg: 'oklch(0.58 0.22 270)' },
+  { id: 'm2', name: 'Sarah J.', initials: 'SJ', status: 'online', role: 'Member', isYou: false, bg: 'oklch(0.58 0.22 145)' },
+  { id: 'm3', name: 'Mike T.', initials: 'MT', status: 'online', role: 'Member', isYou: false, bg: 'oklch(0.58 0.22 45)' },
+  { id: 'm4', name: 'Dr. Peterson', initials: 'DP', status: 'online', role: 'Instructor', isYou: false, bg: 'oklch(0.58 0.22 240)' },
 ];
-
-const CHAR_LIMIT = 5000;
-
-function storageKey(id) { return `ew_room_notes_${id}`; }
-
-// ── SaveStatus indicator ──────────────────────────────────────
-function SaveStatus({ status }) {
-  if (status === 'saving') return (
-    <span className={styles.saveStatus}>
-      <Loader2 size={11} className={styles.spin} /> Saving…
-    </span>
-  );
-  if (status === 'saved') return (
-    <span className={`${styles.saveStatus} ${styles.saved}`}>
-      <CheckCircle2 size={11} /> Saved
-    </span>
-  );
-  return null;
-}
 
 export default function StudyRoom() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // Notes
-  const [notes, setNotes]         = useState(() => localStorage.getItem(storageKey(id)) ?? '');
-  const [saveStatus, setSaveStatus] = useState('idle'); // 'idle' | 'saving' | 'saved'
-
-  // File upload
-  const [files, setFiles]                   = useState([]);
-  const [uploading, setUploading]           = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadingName, setUploadingName]   = useState('');
-  const fileInputRef = useRef(null);
-
-  // ── Auto-save notes with status feedback ──
-  useEffect(() => {
-    if (saveStatus === 'idle') return;
-    setSaveStatus('saving');
-    const t = setTimeout(() => {
-      localStorage.setItem(storageKey(id), notes);
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    }, 700);
-    return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notes]);
-
-  function handleNotesChange(e) {
-    if (e.target.value.length > CHAR_LIMIT) return;
-    setNotes(e.target.value);
-    setSaveStatus('saving');
-  }
-
-  // ── File upload simulation ──
-  function handleFileSelect(e) {
-    const file = e.target.files[0];
-    if (!file || uploading) return;
-    setUploading(true);
-    setUploadProgress(0);
-    setUploadingName(file.name);
-
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 20) + 10;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-        setFiles(prev => [...prev, {
-          id: Date.now(),
-          name: file.name,
-          size: file.size < 1024
-            ? `${file.size} B`
-            : file.size < 1024 * 1024
-              ? `${(file.size / 1024).toFixed(1)} KB`
-              : `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        }]);
-        setUploading(false);
-        setUploadProgress(0);
-        setUploadingName('');
-      }
-      setUploadProgress(progress);
-    }, 220);
-
-    e.target.value = '';
-  }
-
-  function removeFile(fileId) {
-    setFiles(prev => prev.filter(f => f.id !== fileId));
-  }
+  const [activeTab, setActiveTab] = useState('chat');
 
   const onlineCount = MOCK_MEMBERS.filter(m => m.status === 'online').length;
 
   return (
-    <div className={styles.room}>
-
-      {/* ── LEFT: Members ── */}
-      <aside className={styles.members}>
-
-        {/* Back button */}
-        <button
-          id="room-back-btn"
-          className={styles.backBtn}
-          onClick={() => navigate('/rooms')}
-        >
-          <ArrowLeft size={13} />
-          Back to Rooms
+    <div className="flex flex-1 min-h-0 overflow-hidden">
+      {/* LEFT SIDEBAR */}
+      <aside className="hidden md:flex flex-col w-56 border-r border-[var(--border-default)] shrink-0" style={{ background: 'var(--bg-elevated)' }}>
+        <button className="flex items-center gap-2 px-4 py-3 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" onClick={() => navigate('/rooms')}>
+          <ArrowLeft size={14} /> Back to Rooms
         </button>
 
-        {/* Members header */}
-        <div className={styles.membersHeader}>
-          <h2 className={styles.sectionTitle}>Members</h2>
-          <span className={styles.memberCount}>{onlineCount} online</span>
+        <div className="px-3 py-2">
+          <h2 className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2 px-1">Channels</h2>
+          <div className="space-y-0.5">
+            {[
+              { id: 'chat', icon: MessageSquare, label: '# study-chat' },
+              { id: 'notes', icon: FileText, label: '# shared-notes' },
+            ].map(ch => (
+              <button
+                key={ch.id}
+                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition-all ${
+                  activeTab === ch.id
+                    ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.12)] text-[color:oklch(0.58_0.22_var(--accent-hue))] font-medium'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)]'
+                }`}
+                onClick={() => setActiveTab(ch.id)}
+              >
+                <ch.icon size={14} />
+                <span>{ch.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <ul className={styles.memberList}>
-          {MOCK_MEMBERS.map(m => (
-            <li
-              key={m.id}
-              className={`${styles.memberItem} ${m.isYou ? styles.memberYou : ''}`}
-            >
-              <div className={styles.avatarWrap}>
-                <div className={styles.avatar}>{m.initials}</div>
-                <span
-                  className={`${styles.dot} ${m.status === 'online' ? styles.online : styles.offline}`}
-                  title={m.status}
-                />
-              </div>
-              <div className={styles.memberInfo}>
-                <span className={styles.memberName}>
-                  {m.name}{m.isYou && <em className={styles.youTag}> (You)</em>}
-                </span>
-                <span className={styles.memberRole}>{m.role}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        {/* Invite button */}
-        <button id="room-invite-btn" className={styles.inviteBtn}>
-          <UserPlus size={13} />
-          Invite Members
-        </button>
-
-        {/* Session Files */}
-        <div className={styles.fileSection}>
-          <h3 className={styles.fileTitle}>Session Files</h3>
-
-          {/* Upload in-progress row */}
-          {uploading && (
-            <div className={styles.uploadingRow}>
-              <div className={styles.uploadingName}>{uploadingName}</div>
-              <div className={styles.progressTrackSm}>
-                <div className={styles.progressBarSm} style={{ width: `${uploadProgress}%` }} />
-              </div>
-              <span className={styles.uploadPct}>{uploadProgress}%</span>
-            </div>
-          )}
-
-          {files.length === 0 && !uploading ? (
-            <p className={styles.emptyFiles}>No files uploaded yet.</p>
-          ) : (
-            <ul className={styles.fileList}>
-              {files.map(f => (
-                <li key={f.id} className={styles.fileItem}>
-                  <File size={13} className={styles.fileIcon} />
-                  <div className={styles.fileInfo}>
-                    <span className={styles.fileName}>{f.name}</span>
-                    <span className={styles.fileSize}>{f.size}</span>
-                  </div>
-                  <button
-                    onClick={() => removeFile(f.id)}
-                    className={styles.fileRemove}
-                    aria-label={`Remove ${f.name}`}
-                    title="Remove"
-                  >
-                    <X size={11} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="px-3 py-2 mt-2">
+          <div className="flex items-center justify-between px-1 mb-2">
+            <h2 className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Members</h2>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-500 font-medium">{onlineCount}</span>
+          </div>
+          <ul className="space-y-1">
+            {MOCK_MEMBERS.map(m => (
+              <li key={m.id} className="flex items-center gap-2 px-1 py-1.5 rounded-lg">
+                <div className="relative w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0" style={{ background: m.bg }}>
+                  {m.initials}
+                  <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 ${m.status === 'online' ? 'bg-green-500' : 'bg-gray-400'}`} style={{ borderColor: 'var(--bg-elevated)' }} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs truncate">{m.name}</div>
+                  <div className="text-[9px] text-[var(--text-muted)]">{m.role}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <button className="w-full flex items-center gap-2 px-2 py-1.5 mt-2 rounded-lg text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)] transition-colors">
+            <UserPlus size={14} /> Invite Member
+          </button>
         </div>
       </aside>
 
-      {/* ── CENTER: Main content ── */}
-      <main className={styles.center}>
-
-        {/* Room header */}
-        <header className={styles.roomHeader}>
-          <div className={styles.roomMeta}>
-            <h1 className={styles.roomName}>{MOCK_ROOM.name}</h1>
-            <p className={styles.roomSubject}>
-              {MOCK_ROOM.subject} · Room {id} · {onlineCount} of {MOCK_MEMBERS.length} online
-            </p>
+      {/* MAIN CONTENT */}
+      <main className="flex-1 flex flex-col min-w-0">
+        <header className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-default)] shrink-0" style={{ background: 'var(--bg-elevated)' }}>
+          <div>
+            <h1 className="text-sm font-semibold">{MOCK_ROOM.name}</h1>
+            <p className="text-[10px] text-[var(--text-muted)]">{MOCK_ROOM.subject} · {activeTab === 'chat' ? 'Chat' : 'Notes'}</p>
           </div>
-          <span className={styles.liveBadge}>● Live</span>
+          <div className="flex items-center gap-1">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-[var(--bg-glass)] transition-colors" onClick={() => navigate(`/room/${id}/call`)}>
+              <Video size={14} /> <span className="hidden sm:inline">Call</span>
+            </button>
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-[var(--bg-glass)] transition-colors">
+              <Sparkles size={14} /> <span className="hidden sm:inline">AI</span>
+            </button>
+            <button className="p-1.5 rounded-lg hover:bg-[var(--bg-glass)] transition-colors">
+              <MoreVertical size={14} />
+            </button>
+          </div>
         </header>
 
-        {/* Notes editor */}
-        <div className={styles.editorWrap}>
-          <div className={styles.editorToolbar}>
-            <label className={styles.editorLabel} htmlFor="room-notes">
-              Room Notes
-            </label>
-            <div className={styles.editorMeta}>
-              <SaveStatus status={saveStatus} />
-              <span className={styles.charCount}>
-                {notes.length} / {CHAR_LIMIT}
-              </span>
-            </div>
-          </div>
-
-          {notes.length === 0 && (
-            <p className={styles.notesHint}>
-              💡 Tip: Notes are saved automatically and visible to all room members.
-            </p>
-          )}
-
-          <textarea
-            id="room-notes"
-            className={styles.editor}
-            placeholder="Start typing shared notes for this session..."
-            value={notes}
-            onChange={handleNotesChange}
-          />
-        </div>
-
-        {/* Quick actions */}
-        <div className={styles.actions}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            id="room-file-input"
-            style={{ display: 'none' }}
-            onChange={handleFileSelect}
-          />
-
-          <button
-            id="room-upload-btn"
-            className={styles.actionBtn}
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            title={uploading ? `Uploading ${uploadProgress}%` : 'Upload a file to the session'}
-          >
-            <Upload size={15} />
-            {uploading ? `Uploading ${uploadProgress}%` : 'Upload File'}
-          </button>
-
-          <button
-            id="room-start-call-btn"
-            className={`${styles.actionBtn} ${styles.primaryBtn}`}
-            onClick={() => navigate(`/room/${id}/call`)}
-            title="Start a video call with room members"
-          >
-            <Video size={15} />
-            Start Call
-          </button>
-
-          <button
-            id="room-ai-help-btn"
-            className={`${styles.actionBtn} ${styles.aiBtn}`}
-            title="Get AI assistance for this session"
-          >
-            <Sparkles size={15} />
-            AI Help
-          </button>
+        <div className="flex-1 min-h-0 overflow-hidden">
+          {activeTab === 'chat' ? <RoomChat /> : <RoomNotes roomId={id} />}
         </div>
       </main>
-
     </div>
   );
 }
