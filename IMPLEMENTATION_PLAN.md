@@ -19,46 +19,48 @@
 4. **Data Persistence:** Because there is no backend, every single interactive phase MUST use React Context combined with `localStorage` so data persists across reloads.
 5. **UI Aesthetic:** Premium SaaS. Use glassmorphism (`bg-(--bg-glass) backdrop-blur-md`), deep shadows, and subtle gradients. Avoid flat, boring designs.
 
----
-
-## Tech Stack (React-Only Phase)
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 (Vite 8) |
-| Routing | React Router DOM 7 |
-| Styling | Tailwind CSS 4 |
-| Animations | Framer Motion |
-| Icons | Lucide React |
-| State | React Context API + localStorage |
-| Fonts | Inter, Sora, JetBrains Mono |
-
-**NOT using (deferred):** Next.js, TypeScript, backend, databases, real APIs
+This implementation plan is specifically structured for AI agents and human developers collaborating on the EduWrap project. Each phase outlines the exact components, state structures, UI requirements, and dependencies so any developer or AI model can pick up a phase and build it perfectly without breaking the rest of the application.
 
 ---
 
-## Phase Breakdown
+## 🏗️ Current Status & Tech Stack
+
+**Tech Stack:**
+- **Framework**: React 19 (Vite 8)
+- **Routing**: React Router DOM 7
+- **Styling**: Tailwind CSS 4 (using CSS variables and `(--var)` syntax)
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **State**: React Context API + `localStorage`
+- **Fonts**: Inter (UI), Sora (Headings), JetBrains Mono (Code)
+
+**Completed Phases:**
+- **Phase 0:** Foundation Reset (Tailwind 4, Vite, Fonts)
+- **Phase 1:** Design System & Theming (Light/Dark mode, Dynamic Accent colors)
+- **Phase 2:** Reusable UI Component Library (Buttons, Inputs, Cards, Modals, Dropdowns)
+- **Phase 3:** App Shell & Navigation (Sidebar, Topbar, Cmd+K Palette, Responsive Layout)
+- **Phase 4:** Landing Page (Glassmorphic Hero, Bento-grid Features, Animations)
 
 ---
 
-### ✅ PHASE 0 — Foundation Reset (DONE)
-### ✅ PHASE 1 — Design System & Theming (DONE)
-### ✅ PHASE 2 — Reusable UI Component Library (DONE)
-### ✅ PHASE 3 — App Shell & Navigation (DONE)
-### ✅ PHASE 4 — Landing Page (DONE)
+## 🚀 UPCOMING PHASES FOR AI DELEGATION
+
+The following phases are designed to be built in parallel by different teams/AI agents. Please strictly adhere to the defined component names, context structures, and Tailwind utility classes (using `bg-(--bg-elevated)` instead of `bg-[var(...)]`).
 
 ---
 
-### ⏳ PHASE 5 — Authentication Pages
-> **Goal:** Premium glassmorphic auth flow. No real auth — just UI + localStorage.
+### 🟢 PHASE 5 — Authentication Pages (Mock Auth)
+> **Goal:** Premium glassmorphic auth flow and onboarding process. No real backend auth — purely UI and localStorage.
 
-**Understanding & Instructions:**
-This phase replaces the standard login forms with a beautiful, high-fidelity experience. The onboarding flow sets up the `UserContext` which the rest of the application relies on to display the avatar, name, and study preferences.
-
-**Core Components to Build:**
-- `AuthLayout.jsx`: A split-screen or floating glass card layout with an animated background.
-- `LoginForm.jsx` & `SignupForm.jsx`: The actual form inputs.
-- `OnboardingStepper.jsx`: A multi-step UI component using `AnimatePresence` to slide between steps.
+- **Core Components to Build:**
+  - `Login.jsx` & `Signup.jsx`: Auth forms with animated backgrounds.
+  - `OnboardingWizard.jsx`: Multi-step framer-motion stepper.
+- **State Management (`UserContext`):**
+  - **Structure**: `{ id, name, email, avatarInitials, themePreference, accentPreference, isOnboarded: boolean }`
+  - **Process**: On Signup, save to `localStorage('ew_user')`. Onboarding wizard sets `isOnboarded: true`. If `!isOnboarded`, redirect to onboarding.
+- **UI/UX Requirements:**
+  - Use `Card` component with `depth="glass"` for auth forms.
+  - Floating 3D shapes in the background using `motion.div`.
 
 **State Management (`UserContext`):**
 - **Structure:** `{ isLoggedIn: boolean, user: { name, email, avatar, subjects: [], studyPreferences: {} } }`
@@ -69,15 +71,17 @@ This phase replaces the standard login forms with a beautiful, high-fidelity exp
 - Smooth input focus rings using `focus:ring-(--accent-glow)`.
 - Fake loading states on buttons (spinner) for 1-2 seconds before logging in.
 
-- [ ] **Login Page** — email/password form, social login buttons (Google, GitHub), animated background, floating shapes
-- [ ] **Signup Page** — similar to login with name field
-- [ ] **Onboarding Flow** — multi-step stepper after "signup"
-  - Step 1: Name + avatar selection
-  - Step 2: Select subjects/interests
-  - Step 3: Study preferences
-  - Step 4: Welcome screen → navigate to dashboard
-- [ ] Store user data in UserContext + localStorage
-- [ ] Animated transitions between steps
+- **Core Components to Build:**
+  - `WelcomeHeader.jsx`: Shows greeting, current streak, and level.
+  - `StatsGrid.jsx`: 4 glass cards showing XP, groups joined, notes created, quizzes taken.
+  - `RecentActivityFeed.jsx`: A vertical timeline of actions.
+  - `AIRecommendationCard.jsx`: Glowing card suggesting what to study next.
+- **State Management:**
+  - **Structure**: Use a new `DashboardContext` (or mock data file) to feed recent items.
+  - Mock arrays for `recentRooms`, `upcomingSessions`, `recentNotes`.
+- **UI/UX Requirements:**
+  - Hover interactions on all cards (`hover:-translate-y-1 hover:shadow-(--shadow-glow)`).
+  - Use Recharts or simple CSS animated bars for analytics cards.
 
 ---
 
@@ -203,16 +207,16 @@ This is the messaging interface. It must handle scrolling correctly (staying at 
 - Messages must smoothly slide up and fade in when they appear.
 - Hovering over a message should reveal a small quick-reaction bar.
 
-- [ ] Message list with smooth enter animations
-- [ ] Chat bubbles: self vs others styling
-- [ ] Reactions, threaded replies, mentions, timestamps
-- [ ] Typing indicator with animated dots
-- [ ] Emoji picker
-- [ ] File attachment UI
-- [ ] Read receipts
-- [ ] Pinned messages panel
-- [ ] Smooth scroll, auto-scroll to bottom
-- [ ] Mock data with simulated responses
+- **Core Components to Build:**
+  - `ChatContainer.jsx`: Scrollable message list.
+  - `ChatMessage.jsx`: Individual bubble. Differentiate `isSelf={true}` vs others.
+  - `ChatInput.jsx`: Textarea with emoji picker, file attach button.
+- **State Management (`ChatContext` or Component State):**
+  - **Structure**: `{ messages: [{ id, sender, text, timestamp, reactions: {} }] }`
+  - **Process**: When sending a message, append to array. Simulate incoming messages via `setTimeout` for testing.
+- **UI/UX Requirements:**
+  - `AnimatePresence` for new messages sliding up from the bottom.
+  - Auto-scroll to bottom using a `useRef`.
 
 ---
 
@@ -267,13 +271,16 @@ Users create decks of cards and study them. The core interaction is the 3D card 
 - The 3D flip must preserve depth (use `preserve-3d` and `backface-hidden` CSS properties).
 - Swipe gestures (or arrow keys) to move to the next card.
 
-- [ ] Deck library page with progress rings
-- [ ] Create/edit deck
-- [ ] Study mode — animated 3D card flip
-- [ ] Progress tracking (known/learning/new)
-- [ ] Spaced repetition indicators
-- [ ] Study analytics
-- [ ] AI deck generation UI (mock)
+- **Core Components to Build:**
+  - `DeckBrowser.jsx`: List of available flashcard decks.
+  - `FlashcardCreator.jsx`: Form to add Front/Back texts.
+  - `FlashcardViewer.jsx`: The actual interactive study mode interface.
+- **State Management (`FlashcardContext`):**
+  - **Structure**: `[{ deckId, title, cards: [{ cardId, front, back, status: 'new' | 'learning' | 'mastered' }] }]`
+  - **Process**: Upon answering, update the card's status and advance to the next card.
+- **UI/UX Requirements:**
+  - 3D Card Flip Animation using Framer Motion (`rotateY: 180`, `backface-visibility: hidden`).
+  - Swiping gestures for mobile using `framer-motion` drag attributes (`drag="x"`).
 
 ---
 
@@ -295,13 +302,16 @@ A gamified multiple-choice quiz environment. Needs to handle timers and scoring.
 - When an answer is selected, briefly flash green/red before proceeding to the next question.
 - Confetti on high scores.
 
-- [ ] Quiz selector/browser
-- [ ] Quiz interface — questions, options, timer
-- [ ] Answer feedback animations
-- [ ] Animated score reveal
-- [ ] Results analytics — weak topics, time per question
-- [ ] Focus mode — minimal distraction UI
-- [ ] Quiz history
+- **Core Components to Build:**
+  - `QuizInterface.jsx`: Shows one question at a time.
+  - `TimerBar.jsx`: Animated shrinking progress bar.
+  - `QuizResults.jsx`: Final score, correct/incorrect review list, and XP earned.
+- **State Management (`QuizContext`):**
+  - **Structure**: `[{ quizId, questions: [{ q, options, correctAnswer }], timeLimit }]`
+  - **Active State**: `currentQuestionIndex`, `selectedAnswers: {}`, `score`.
+- **UI/UX Requirements:**
+  - Answer feedback animations (green flash for correct, red shake for incorrect).
+  - Animated number counting up on the results screen.
 
 ---
 
@@ -323,14 +333,15 @@ This is purely a visual interface mocking a Zoom/Discord call.
 - Speaking indicator: A glowing border `ring-2 ring-(--accent-glow)` around the active speaker.
 - Hover menus to adjust volume per participant.
 
-- [ ] Participant video grid (mock placeholders)
-- [ ] Self-view preview
-- [ ] Floating control bar: mute, camera, screen share, reactions, leave
-- [ ] Speaking indicators (border glow)
-- [ ] Screen share preview
-- [ ] Draggable notes overlay
-- [ ] Chat accessible alongside call
-- [ ] Emoji reactions
+- **Core Components to Build:**
+  - `VideoGrid.jsx`: Dynamic CSS grid that changes based on participant count.
+  - `VideoTile.jsx`: Shows user avatar or fake camera feed. Speaking indicator border.
+  - `CallControls.jsx`: Floating pill with Mute, Video, Screen Share, End Call.
+- **State Management:**
+  - **Structure**: `[{ participantId, name, isMuted, isSpeaking, isVideoOn }]`
+- **UI/UX Requirements:**
+  - Pulsing glow around `VideoTile` when `isSpeaking` is true (`shadow-(--shadow-glow)`).
+  - Draggable, resizable components so users can overlay Notes while on the call.
 
 ---
 
@@ -352,14 +363,15 @@ A forum-like feature within the app for asking and answering questions.
 - Subtle pop animations on upvote.
 - Clear "Resolved" badges (green pill).
 
-- [ ] Post cards: title, description, tags, author, timestamp
-- [ ] Upvote/downvote
-- [ ] Answer threads
-- [ ] AI answer panel (mock)
-- [ ] Resolved badge
-- [ ] Filtering: newest, popular, unanswered, resolved
-- [ ] Tag browsing
-- [ ] Create question form
+- **Core Components to Build:**
+  - `DoubtFeed.jsx`: List of question cards.
+  - `QuestionCard.jsx`: Title, tags, upvotes, "Resolved" badge.
+  - `DoubtDetail.jsx`: The full question thread with replies.
+- **State Management (`DoubtContext`):**
+  - **Structure**: `[{ doubtId, title, body, author, upvotes, replies: [], isResolved }]`
+- **UI/UX Requirements:**
+  - Upvote animation (pop effect on the arrow icon).
+  - Filtering tabs (Newest, Unanswered, Resolved) using the `Tabs` UI component.
 
 ---
 
@@ -380,12 +392,14 @@ A Google Drive-style file explorer for study resources.
 - Dotted border that animates when dragging a file over the screen.
 - Icons specific to file types (PDF, Word, Image).
 
-- [ ] Upload zone (drag-and-drop)
-- [ ] File grid/list view toggle
-- [ ] Type-specific file cards (PDF, image, video, doc, link)
-- [ ] Search and filter
-- [ ] File preview modal
-- [ ] Storage usage indicator
+- **Core Components to Build:**
+  - `FileManager.jsx`: Table or Grid view of files.
+  - `UploadZone.jsx`: Drag-and-drop dotted border area.
+- **State Management (`FileContext`):**
+  - **Structure**: `[{ fileId, name, size, type (pdf/image/doc), uploadDate }]`
+- **UI/UX Requirements:**
+  - Use the existing `FileCard` component.
+  - Smooth upload progress bar animation.
 
 ---
 
@@ -403,13 +417,14 @@ A place where the user's hard work is visually rewarded.
 - Glowing effects on rare/high-level badges.
 - Smooth tooltips when hovering over heatmap squares.
 
-- [ ] Profile page — avatar, name, bio, stats
-- [ ] XP system — animated counter, level progress
-- [ ] Streak calendar — GitHub-style contribution grid
-- [ ] Badge wall — earned achievements
-- [ ] Study analytics — charts
-- [ ] Full leaderboard
-- [ ] Celebratory animations
+- **Core Components to Build:**
+  - `UserProfile.jsx`: Layout showing avatar, bio, and stats.
+  - `ContributionGrid.jsx`: GitHub-style green square heatmap for study streaks.
+  - `BadgeWall.jsx`: Grid of unlocked achievements.
+- **State Management (`GamificationContext`):**
+  - **Structure**: `{ currentXP, level, streakDays, badges: [] }`
+- **UI/UX Requirements:**
+  - Confetti explosion (using a library like `canvas-confetti`) when leveling up.
 
 ---
 
@@ -423,67 +438,30 @@ A unified interface for configuring the app. Ensure it connects properly to the 
 - `SettingsLayout.jsx`: A 2-column layout (nav on left, form on right).
 - `ColorPicker.jsx`: A visual selector for the accent color system.
 
-- [ ] Theme switcher — light / dark / system
-- [ ] Accent color picker — visual grid
-- [ ] Notification preferences
-- [ ] Font size controls
-- [ ] Keyboard shortcuts reference
-- [ ] Account preferences
-- [ ] Danger zone — logout, reset
+- **Core Components to Build:**
+  - `SettingsLayout.jsx`: Vertical tabs on the left, forms on the right.
+  - `AppearanceSettings.jsx`: Theme toggles, accent color picker.
+- **State Management:**
+  - Connects to existing `ThemeContext` and `UserContext`.
+- **UI/UX Requirements:**
+  - Live preview of colors when clicking accent color swatches.
 
 ---
 
 ### ⏳ PHASE 17 — Final Polish
 > **Goal:** Animation pass, edge cases, responsive audit.
 
-- [ ] Page transition animations
-- [ ] All loading skeletons
-- [ ] All empty states
-- [ ] Responsive audit: desktop, tablet, mobile
-- [ ] Keyboard navigation
-- [ ] Accessibility (ARIA labels, focus management)
-- [ ] Performance (lazy loading, code splitting)
-- [ ] Cross-browser testing
+- **Checklist:**
+  - Ensure all routes are wrapped in `<AnimatePresence>` with `will-change-transform transform-gpu` applied to `motion.div`.
+  - Validate mobile responsiveness (Hamburger menus, stacked grids).
+  - Implement `LoadingSkeleton` during any simulated data fetching.
 
 ---
 
-## Phase Dependencies
+## 🤖 Instructions for AI Agents Working on this Project
 
-```
-Phase 0 (Foundation)
-  → Phase 1 (Design System)
-    → Phase 2 (UI Components)
-      → Phase 3 (App Shell)
-        → Phase 4 (Landing)
-        → Phase 5 (Auth)
-        → Phase 6 (Dashboard)
-        → Phase 7 (Study Rooms) ← CORE, largest
-          → Phase 8 (Chat)
-          → Phase 9 (Notes)
-          → Phase 10 (Flashcards)
-          → Phase 11 (Quiz)
-          → Phase 12 (Video Call)
-          → Phase 13 (Doubts)
-          → Phase 14 (Files)
-        → Phase 15 (Profile)
-        → Phase 16 (Settings)
-      → Phase 17 (Polish) ← after everything
-```
-
-Phases 4–16 can be done in any order after Phase 3, but Phase 7 (Study Rooms) should come before 8–14 since those features live inside rooms.
-
----
-
-## Summary
-
-| Phases | Count | Description |
-|--------|-------|-------------|
-| 0–1 | 2 | Foundation + Design System |
-| 2–3 | 2 | Components + App Shell |
-| 4–5 | 2 | Landing + Auth |
-| 6 | 1 | Dashboard |
-| 7 | 1 (6 sub-phases) | Study Room System (CORE) |
-| 8–14 | 7 | Feature Pages |
-| 15–16 | 2 | Profile + Settings |
-| 17 | 1 | Final Polish |
-| **Total** | **18 phases** | |
+When assigned a Phase from above, you must:
+1. **Analyze Dependencies:** Ensure the components you need from Phase 2 (`Button`, `Card`, `Input`, etc.) are imported from `src/components/ui/`. DO NOT build custom UI components if a global one exists.
+2. **Follow Tailwind v4 Syntax:** We use CSS variables. NEVER use `bg-[var(--bg-elevated)]`. ALWAYS use `bg-(--bg-elevated)`.
+3. **Persist State:** Use React Context + `localStorage` for all mock data so the app feels real when refreshing.
+4. **Wow the User:** Ensure the UI feels premium. Add subtle `framer-motion` entry animations to lists and modals. Use glassmorphism (`bg-(--bg-glass) backdrop-blur-md`) wherever layers overlap.
