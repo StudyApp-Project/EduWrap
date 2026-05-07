@@ -5,18 +5,19 @@
 **What exists today:**
 - React 19 + Vite 8 project (working)
 - React Router DOM 7 routing (working)
-- CSS Modules styling (will be replaced with Tailwind)
+- CSS Modules styling replaced entirely with Tailwind CSS v4
 - Lucide React icons (keep)
 - 4 pages built: Landing, Dashboard, Rooms, StudyRoom (will be rebuilt)
 - UserContext with localStorage persistence (keep pattern, expand)
-- 3 unused UI components: Button, LoadingSkeleton, Toast (will be rebuilt)
+- Theme system and Accent system active
+- Completed Phases 0 through 4 (Foundation, Design System, UI Components, App Shell, Landing)
 
-**What needs to change:**
-- Replace CSS Modules → Tailwind CSS
-- Add Framer Motion for animations
-- Add fonts: Inter, Sora, JetBrains Mono
-- Rebuild all existing pages to match premium SaaS spec
-- Build all missing features
+**Important Architecture Notes for AI Agents:**
+1. **Tailwind v4 Variables:** We strictly use Tailwind v4 arbitrary syntax. DO NOT use `bg-[var(--bg-elevated)]`. YOU MUST USE `bg-(--bg-elevated)`. All CSS variables map natively in v4 using parentheses.
+2. **Global Specificity:** A `@layer base` wrapper is used in `index.css` to prevent `* { margin: 0 }` from overriding Tailwind utilities. If you write custom CSS, always put it in a `@layer`.
+3. **Animations:** We heavily use `framer-motion`. For any blurred or heavy animation, always attach `will-change-transform transform-gpu` to the `className`.
+4. **Data Persistence:** Because there is no backend, every single interactive phase MUST use React Context combined with `localStorage` so data persists across reloads.
+5. **UI Aesthetic:** Premium SaaS. Use glassmorphism (`bg-(--bg-glass) backdrop-blur-md`), deep shadows, and subtle gradients. Avoid flat, boring designs.
 
 ---
 
@@ -41,106 +42,32 @@
 ---
 
 ### ✅ PHASE 0 — Foundation Reset (DONE)
-> Install dependencies, configure Tailwind, set up fonts, clean old CSS Modules.
-
-- [x] Install Tailwind CSS 4 + configure with Vite
-- [x] Install Framer Motion
-- [x] Add Google Fonts: Inter (UI), Sora (hero headings), JetBrains Mono (code)
-- [x] Remove all `.module.css` files
-- [x] Remove `App.css`
-- [x] Rewrite `index.css` as Tailwind base with CSS variable design tokens
-- [x] Verify project builds and runs clean
-
----
-
 ### ✅ PHASE 1 — Design System & Theming (DONE)
-> Build the global theme system, accent color system, and CSS variable architecture.
-
-- [x] **Theme system** — light / dark / system toggle
-  - CSS variables for all color tokens (bg, surface, text, border, accent)
-  - Light theme: soft whites, glass cards, clean shadows
-  - Dark theme: deep navy-black, glowing accents, glass overlays
-  - `ThemeContext` provider with localStorage persistence
-  - Smooth instant theme transitions
-- [x] **Accent color system** — dynamic user-selectable accent
-  - Support: violet, purple, blue, cyan, green, emerald, orange, red, pink
-  - CSS variables: `--accent`, `--accent-hover`, `--accent-dim`, `--accent-glow`
-  - `AccentContext` or merge into ThemeContext
-  - Auto-updates: buttons, active states, focus rings, progress bars, sidebar highlights
-- [x] **Tailwind config** — extend with custom tokens
-  - Colors, fonts, spacing, border-radius, shadows, backdrop-blur
-  - Glassmorphism utility classes
-- [x] **Typography scale** — headings, body, captions, code
-- [x] **Spacing & layout tokens** — sidebar width, topbar height, panel gaps
-
----
-
 ### ✅ PHASE 2 — Reusable UI Component Library (DONE)
-> Build all shared components before any pages. Every component supports dark/light + accent colors.
-
-- [x] **Button** — primary, secondary, ghost, danger, outline; sizes sm/md/lg; loading state
-- [x] **Input** — text, search, textarea; focus ring with accent
-- [x] **Card** — glass card with hover elevation, depth variants
-- [x] **Modal** — animated overlay + backdrop blur + Framer Motion
-- [x] **Tooltip** — hover tooltips with smooth fade
-- [x] **Toast / Notification** — portal-based, animated slide-in, auto-dismiss
-- [x] **Dropdown** — animated, keyboard-navigable
-- [x] **Tabs** — animated underline/pill indicator
-- [x] **Avatar** — image, initials, status dot, size variants
-- [x] **Progress Ring** — SVG circular progress with animation
-- [x] **Badge** — status badges, count badges
-- [x] **Skeleton Loader** — shimmer loading placeholders
-- [x] **Empty State** — illustrated empty states with CTA
-- [x] **File Card** — PDF, image, video, doc, link variants
-- [x] **Floating Panel** — draggable/resizable overlay panels
-- [ ] **AI Widget** — glowing AI interaction card
-
----
-
 ### ✅ PHASE 3 — App Shell & Navigation (DONE)
-> Build the persistent layout structure: sidebar, topbar, workspace area, command palette.
-
-- [x] **AppLayout** — sidebar + topbar + main content + optional right panel
-- [x] **Sidebar** — collapsible (full → icon-only), smooth animation
-  - Nav items: Dashboard, Study Rooms, Notes, Flashcards, Quiz, Doubts, Files, Profile, Settings
-  - Active state with accent glow
-  - Hover tooltips in collapsed mode
-  - Unread count badges
-  - Animated collapse/expand
-- [x] **Topbar** — global search, notifications dropdown, streak indicator, user avatar menu, quick actions
-- [x] **Command Palette** — `Cmd+K` / `Ctrl+K`
-  - Animated overlay with blur background
-  - Global search, quick navigation, recent items, quick actions
-- [x] **Responsive behavior**
-  - Desktop: persistent sidebar
-  - Tablet: collapsible sidebar
-  - Mobile: bottom nav or hamburger drawer
-- [x] **Page transition animations** — Framer Motion `AnimatePresence`
-
----
-
 ### ✅ PHASE 4 — Landing Page (DONE)
-> World-class SaaS marketing page. First impression = everything.
-
-- [x] **Floating Navbar** — logo, Features, Pricing, About, Login, Sign Up CTA; blur-on-scroll
-- [x] **Hero Section**
-  - Giant headline (Sora font), animated gradient background
-  - Floating UI mockup previews
-  - CTA buttons (Get Started, Watch Demo)
-  - Animated particles / light effects
-  - Stats bar (students, groups, satisfaction)
-- [x] **Features Section** — 8 glassmorphic animated cards
-  - Study Rooms, AI Assistant, Flashcards, Live Collaboration, Quizzes, Notes, Gamification, File Sharing
-- [x] **Interactive Demo Section** — fake live previews (chat, dashboard, AI, notes)
-- [x] **Social Proof** — testimonials, usage counters, university logos
-- [x] **CTA Footer** — glowing call-to-action section
-- [x] **Footer** — links, copyright, branding
-- [x] All sections: scroll-triggered animations (Framer Motion `whileInView`)
 
 ---
 
-### PHASE 5 — Authentication Pages
-> Premium glassmorphic auth flow. No real auth — just UI + localStorage.
+### ⏳ PHASE 5 — Authentication Pages
+> **Goal:** Premium glassmorphic auth flow. No real auth — just UI + localStorage.
+
+**Understanding & Instructions:**
+This phase replaces the standard login forms with a beautiful, high-fidelity experience. The onboarding flow sets up the `UserContext` which the rest of the application relies on to display the avatar, name, and study preferences.
+
+**Core Components to Build:**
+- `AuthLayout.jsx`: A split-screen or floating glass card layout with an animated background.
+- `LoginForm.jsx` & `SignupForm.jsx`: The actual form inputs.
+- `OnboardingStepper.jsx`: A multi-step UI component using `AnimatePresence` to slide between steps.
+
+**State Management (`UserContext`):**
+- **Structure:** `{ isLoggedIn: boolean, user: { name, email, avatar, subjects: [], studyPreferences: {} } }`
+- Save to `localStorage('ew_user_session')`.
+
+**UI/UX Requirements:**
+- Soft blur behind the form.
+- Smooth input focus rings using `focus:ring-(--accent-glow)`.
+- Fake loading states on buttons (spinner) for 1-2 seconds before logging in.
 
 - [ ] **Login Page** — email/password form, social login buttons (Google, GitHub), animated background, floating shapes
 - [ ] **Signup Page** — similar to login with name field
@@ -154,8 +81,25 @@
 
 ---
 
-### PHASE 6 — Dashboard
-> Data-rich but minimal. Should feel like a premium command center.
+### ⏳ PHASE 6 — Dashboard
+> **Goal:** Data-rich but minimal. Should feel like a premium command center.
+
+**Understanding & Instructions:**
+The Dashboard is the home page of the logged-in experience. It aggregates data from the other modules (Study Rooms, Notes, Quizzes) and displays it beautifully using Bento-grid layouts and interactive charts.
+
+**Core Components to Build:**
+- `WelcomeHeader.jsx`: Personalized greeting based on time of day, displaying the user's current streak.
+- `StatCard.jsx`: Glassmorphic cards for displaying high-level metrics (XP, level).
+- `ActivityFeed.jsx`: A vertical timeline of simulated past actions.
+- `LeaderboardMini.jsx`: A small tabular view of top students.
+
+**State Management (`DashboardContext` or Mock Data):**
+- Create mock arrays for `recentActivities`, `upcomingSessions`, and `analyticsData`.
+- Use `UserContext` for XP and streak.
+
+**UI/UX Requirements:**
+- Animated number count-ups for stats (e.g., jumping from 0 to 500 XP smoothly).
+- Hover interactions on cards that slightly lift them `hover:-translate-y-1` and increase shadow `hover:shadow-(--shadow-glow)`.
 
 - [ ] **Welcome header** — personalized greeting, streak indicator
 - [ ] **Stats grid** — XP, streak, level, study groups (animated counters)
@@ -172,8 +116,24 @@
 
 ---
 
-### PHASE 7 — Study Room System (CORE — Largest Phase)
-> The heart of EduWrap. Discord + Notion + Google Classroom architecture.
+### ⏳ PHASE 7 — Study Room System (CORE — Largest Phase)
+> **Goal:** The heart of EduWrap. Discord + Notion + Google Classroom architecture.
+
+**Understanding & Instructions:**
+This is the most complex phase. A "Room" contains multiple "Classrooms" (like Discord servers containing channels). You need to build a discovery page to find rooms, a creation modal to make new ones, and the actual Room Layout which includes a dedicated left sidebar for navigation and a right sidebar for members/chat.
+
+**Core Components to Build:**
+- `RoomDiscovery.jsx`: A grid of available rooms with a search bar.
+- `RoomLayout.jsx`: A 3-pane layout specific to a study room (Sub-sidebar, Main Content, Right Panel).
+- `ClassroomList.jsx`: The navigation panel inside a room to switch between chats, notes, and video calls.
+
+**State Management (`RoomContext`):**
+- **Structure:** `rooms: [{ id, name, category, members, classrooms: [{ id, type, name }] }]`
+- **Active State:** `activeRoomId`, `activeClassroomId`.
+
+**UI/UX Requirements:**
+- The transitions between classrooms should be seamless and use `AnimatePresence`.
+- Active users in voice/video channels should have a subtle pulsing green ring.
 
 #### 7A — Study Room Discovery Page
 - [ ] Search bar with filters
@@ -224,8 +184,24 @@
 
 ---
 
-### PHASE 8 — Chat System
-> Modern Discord-quality chat UI.
+### ⏳ PHASE 8 — Chat System
+> **Goal:** Modern Discord-quality chat UI.
+
+**Understanding & Instructions:**
+This is the messaging interface. It must handle scrolling correctly (staying at the bottom when new messages arrive). 
+
+**Core Components to Build:**
+- `MessageList.jsx`: The scrollable area containing messages.
+- `MessageBubble.jsx`: Differentiates between 'me' and 'others'.
+- `ChatInput.jsx`: A growing textarea with an emoji picker button and attachment clip.
+
+**State Management (`ChatContext`):**
+- **Structure:** `messages: [{ id, senderId, text, timestamp, reactions: {} }]`
+- Save to localStorage so chats persist.
+
+**UI/UX Requirements:**
+- Messages must smoothly slide up and fade in when they appear.
+- Hovering over a message should reveal a small quick-reaction bar.
 
 - [ ] Message list with smooth enter animations
 - [ ] Chat bubbles: self vs others styling
@@ -240,8 +216,24 @@
 
 ---
 
-### PHASE 9 — Notes Editor
-> Notion-inspired, distraction-free writing experience.
+### ⏳ PHASE 9 — Notes Editor
+> **Goal:** Notion-inspired, distraction-free writing experience.
+
+**Understanding & Instructions:**
+A rich text editor clone. Rather than building a full slate/prosemirror editor from scratch, you can implement a block-like UI using multiple contenteditable divs, or a very polished single textarea with markdown parsing.
+
+**Core Components to Build:**
+- `NotesEditor.jsx`: The main typing interface.
+- `SlashMenu.jsx`: A floating popup that appears when `/` is typed.
+- `Toolbar.jsx`: Formatting options (bold, italic, H1, H2).
+
+**State Management (`NotesContext`):**
+- **Structure:** `notes: [{ id, title, content, tags, lastEdited }]`
+- Auto-save logic utilizing `useEffect` and `setTimeout`.
+
+**UI/UX Requirements:**
+- Must look incredibly clean—almost entirely blank page until you start typing.
+- Typography is critical here: use `prose` classes or strict typography rules for readability.
 
 - [ ] Block-based editor (headings, paragraphs, lists, code, dividers)
 - [ ] Markdown shortcuts
@@ -257,8 +249,23 @@
 
 ---
 
-### PHASE 10 — Flashcard System
-> Polished Quizlet-like experience.
+### ⏳ PHASE 10 — Flashcard System
+> **Goal:** Polished Quizlet-like experience.
+
+**Understanding & Instructions:**
+Users create decks of cards and study them. The core interaction is the 3D card flip animation.
+
+**Core Components to Build:**
+- `DeckGrid.jsx`: Shows available decks with progress rings.
+- `FlashcardStudy.jsx`: The active study interface.
+- `Card3D.jsx`: Uses Framer Motion `rotateY` for a smooth 3D flip effect.
+
+**State Management (`FlashcardContext`):**
+- **Structure:** `decks: [{ id, title, cards: [{ front, back, status: 'new'|'learning'|'known' }] }]`
+
+**UI/UX Requirements:**
+- The 3D flip must preserve depth (use `preserve-3d` and `backface-hidden` CSS properties).
+- Swipe gestures (or arrow keys) to move to the next card.
 
 - [ ] Deck library page with progress rings
 - [ ] Create/edit deck
@@ -270,8 +277,23 @@
 
 ---
 
-### PHASE 11 — Quiz System
-> Focus-mode quiz experience.
+### ⏳ PHASE 11 — Quiz System
+> **Goal:** Focus-mode quiz experience.
+
+**Understanding & Instructions:**
+A gamified multiple-choice quiz environment. Needs to handle timers and scoring.
+
+**Core Components to Build:**
+- `QuizPlayer.jsx`: The active quiz view showing one question at a time.
+- `OptionButton.jsx`: Selectable answers.
+- `QuizResults.jsx`: The final screen showing charts of performance.
+
+**State Management (`QuizContext`):**
+- **Structure:** `activeQuiz: { currentQuestionIndex, selectedAnswers: {}, score, timeRemaining }`
+
+**UI/UX Requirements:**
+- When an answer is selected, briefly flash green/red before proceeding to the next question.
+- Confetti on high scores.
 
 - [ ] Quiz selector/browser
 - [ ] Quiz interface — questions, options, timer
@@ -283,8 +305,23 @@
 
 ---
 
-### PHASE 12 — Video Call UI
-> Futuristic collaboration call. UI only, no WebRTC.
+### ⏳ PHASE 12 — Video Call UI
+> **Goal:** Futuristic collaboration call. UI only, no WebRTC.
+
+**Understanding & Instructions:**
+This is purely a visual interface mocking a Zoom/Discord call.
+
+**Core Components to Build:**
+- `VideoGrid.jsx`: Dynamically resizes based on participant count (1x1, 2x2, 3x3).
+- `ParticipantTile.jsx`: Displays avatar and fake webcam stream placeholder.
+- `CallControls.jsx`: Floating pill with Mute/Video/Leave buttons.
+
+**State Management:**
+- **Structure:** `participants: [{ id, name, isSpeaking, isMuted, hasVideo }]`
+
+**UI/UX Requirements:**
+- Speaking indicator: A glowing border `ring-2 ring-(--accent-glow)` around the active speaker.
+- Hover menus to adjust volume per participant.
 
 - [ ] Participant video grid (mock placeholders)
 - [ ] Self-view preview
@@ -297,8 +334,23 @@
 
 ---
 
-### PHASE 13 — Doubt Board
-> Academic Q&A feed.
+### ⏳ PHASE 13 — Doubt Board
+> **Goal:** Academic Q&A feed.
+
+**Understanding & Instructions:**
+A forum-like feature within the app for asking and answering questions.
+
+**Core Components to Build:**
+- `QuestionFeed.jsx`: A list of questions.
+- `QuestionDetail.jsx`: The thread view.
+- `VoteControls.jsx`: Upvote/downvote arrows.
+
+**State Management (`DoubtContext`):**
+- **Structure:** `questions: [{ id, title, body, upvotes, isResolved, replies: [] }]`
+
+**UI/UX Requirements:**
+- Subtle pop animations on upvote.
+- Clear "Resolved" badges (green pill).
 
 - [ ] Post cards: title, description, tags, author, timestamp
 - [ ] Upvote/downvote
@@ -311,8 +363,22 @@
 
 ---
 
-### PHASE 14 — File Manager
-> Drag-and-drop file management.
+### ⏳ PHASE 14 — File Manager
+> **Goal:** Drag-and-drop file management.
+
+**Understanding & Instructions:**
+A Google Drive-style file explorer for study resources.
+
+**Core Components to Build:**
+- `DropZone.jsx`: An area that highlights when files are dragged over it.
+- `FileGrid.jsx`: Uses the existing `FileCard` component.
+
+**State Management (`FileContext`):**
+- **Structure:** `files: [{ id, name, size, type, uploadDate }]`
+
+**UI/UX Requirements:**
+- Dotted border that animates when dragging a file over the screen.
+- Icons specific to file types (PDF, Word, Image).
 
 - [ ] Upload zone (drag-and-drop)
 - [ ] File grid/list view toggle
@@ -323,8 +389,19 @@
 
 ---
 
-### PHASE 15 — Profile & Gamification
-> Rewarding, motivating profile.
+### ⏳ PHASE 15 — Profile & Gamification
+> **Goal:** Rewarding, motivating profile.
+
+**Understanding & Instructions:**
+A place where the user's hard work is visually rewarded.
+
+**Core Components to Build:**
+- `ContributionHeatmap.jsx`: A grid of small squares representing daily activity (like GitHub).
+- `BadgeWall.jsx`: A gallery of unlocked achievements.
+
+**UI/UX Requirements:**
+- Glowing effects on rare/high-level badges.
+- Smooth tooltips when hovering over heatmap squares.
 
 - [ ] Profile page — avatar, name, bio, stats
 - [ ] XP system — animated counter, level progress
@@ -336,8 +413,15 @@
 
 ---
 
-### PHASE 16 — Settings
-> Clean, organized preferences.
+### ⏳ PHASE 16 — Settings
+> **Goal:** Clean, organized preferences.
+
+**Understanding & Instructions:**
+A unified interface for configuring the app. Ensure it connects properly to the `ThemeContext` already built.
+
+**Core Components to Build:**
+- `SettingsLayout.jsx`: A 2-column layout (nav on left, form on right).
+- `ColorPicker.jsx`: A visual selector for the accent color system.
 
 - [ ] Theme switcher — light / dark / system
 - [ ] Accent color picker — visual grid
@@ -349,8 +433,8 @@
 
 ---
 
-### PHASE 17 — Final Polish
-> Animation pass, edge cases, responsive audit.
+### ⏳ PHASE 17 — Final Polish
+> **Goal:** Animation pass, edge cases, responsive audit.
 
 - [ ] Page transition animations
 - [ ] All loading skeletons
