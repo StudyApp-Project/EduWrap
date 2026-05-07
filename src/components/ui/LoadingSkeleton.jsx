@@ -6,13 +6,13 @@ export function LoadingSkeleton({ className, variant = 'default' }) {
   };
 
   return (
-    <div className={`animate-pulse bg-[var(--bg-glass)] ${variantClasses[variant]} ${className || ''}`} />
+    <div className={`animate-pulse bg-(--bg-glass) ${variantClasses[variant]} ${className || ''}`} />
   );
 }
 
 export function CardSkeleton() {
   return (
-    <div className="flex items-center gap-3 p-4 rounded-2xl border border-[var(--border-default)]" style={{ background: 'var(--bg-surface)' }}>
+    <div className="flex items-center gap-3 p-4 rounded-2xl border border-(--border-default)" style={{ background: 'var(--bg-surface)' }}>
       <LoadingSkeleton variant="avatar" />
       <div className="flex-1 space-y-2">
         <LoadingSkeleton variant="text" className="w-3/4" />

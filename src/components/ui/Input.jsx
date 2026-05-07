@@ -7,15 +7,15 @@ export const Input = forwardRef(
       <div className="relative w-full flex flex-col gap-1">
         <div className="relative flex items-center">
           {Icon && (
-            <div className="absolute left-3 text-[var(--text-muted)] flex items-center justify-center pointer-events-none">
+            <div className="absolute left-3 text-(--text-muted) flex items-center justify-center pointer-events-none">
               <Icon size={16} />
             </div>
           )}
           <input
             ref={ref}
-            className={`w-full bg-[var(--bg-glass)] border ${
-              error ? 'border-red-500' : 'border-[var(--border-default)] focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.6)]'
-            } rounded-xl px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none transition-colors ${
+            className={`w-full bg-(--bg-glass) border ${
+              error ? 'border-red-500' : 'border-(--border-default) focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.6)]'
+            } rounded-xl px-4 py-2.5 text-sm text-(--text-primary) placeholder:text-(--text-muted) outline-none transition-colors ${
               Icon ? 'pl-10' : ''
             } ${className}`}
             {...props}
@@ -39,9 +39,9 @@ export const Textarea = forwardRef(
       <div className="relative w-full flex flex-col gap-1">
         <textarea
           ref={ref}
-          className={`w-full bg-[var(--bg-glass)] border ${
-            error ? 'border-red-500' : 'border-[var(--border-default)] focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.6)]'
-          } rounded-xl px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none transition-colors resize-y min-h-[80px] ${className}`}
+          className={`w-full bg-(--bg-glass) border ${
+            error ? 'border-red-500' : 'border-(--border-default) focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.6)]'
+          } rounded-xl px-4 py-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) outline-none transition-colors resize-y min-h-[80px] ${className}`}
           {...props}
         />
         {error && <span className="text-xs text-red-500 pl-1">{error}</span>}

@@ -79,31 +79,31 @@ export default function CommandPalette({ isOpen, onClose }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-2xl bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-2xl shadow-[var(--shadow-lg)] overflow-hidden flex flex-col"
+          className="relative w-full max-w-2xl bg-(--bg-elevated) border border-(--border-strong) rounded-2xl shadow-(--shadow-lg) overflow-hidden flex flex-col"
         >
-          <div className="flex items-center gap-3 p-3 border-b border-[var(--border-default)]">
-            <Search size={20} className="text-[var(--text-muted)] ml-2 shrink-0" />
+          <div className="flex items-center gap-3 p-3 border-b border-(--border-default)">
+            <Search size={20} className="text-(--text-muted) ml-2 shrink-0" />
             <input
               autoFocus
               type="text"
               placeholder="Type a command or search..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] h-10"
+              className="flex-1 bg-transparent border-none outline-none text-base text-(--text-primary) placeholder:text-(--text-muted) h-10"
             />
-            <kbd className="px-2 py-1 rounded-md bg-[var(--bg-surface)] border border-[var(--border-default)] text-[10px] text-[var(--text-muted)] font-mono shrink-0">
+            <kbd className="px-2 py-1 rounded-md bg-(--bg-surface) border border-(--border-default) text-[10px] text-(--text-muted) font-mono shrink-0">
               ESC
             </kbd>
           </div>
 
           <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
             {filteredCommands.length === 0 ? (
-              <div className="p-6 text-center text-sm text-[var(--text-muted)]">
+              <div className="p-6 text-center text-sm text-(--text-muted)">
                 No results found.
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                <div className="px-3 py-1.5 text-xs font-semibold text-(--text-muted) uppercase tracking-wider">
                   Suggestions
                 </div>
                 {filteredCommands.map((cmd, index) => {
@@ -119,10 +119,10 @@ export default function CommandPalette({ isOpen, onClose }) {
                       className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-colors text-left ${
                         isSelected 
                           ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] text-[color:oklch(0.58_0.22_var(--accent-hue))]' 
-                          : 'text-[var(--text-secondary)] hover:bg-[var(--bg-glass)]'
+                          : 'text-(--text-secondary) hover:bg-(--bg-glass)'
                       }`}
                     >
-                      <cmd.icon size={18} className={isSelected ? 'text-[color:oklch(0.58_0.22_var(--accent-hue))]' : 'text-[var(--text-muted)]'} />
+                      <cmd.icon size={18} className={isSelected ? 'text-[color:oklch(0.58_0.22_var(--accent-hue))]' : 'text-(--text-muted)'} />
                       <span className="font-medium">{cmd.label}</span>
                     </button>
                   );
@@ -131,7 +131,7 @@ export default function CommandPalette({ isOpen, onClose }) {
             )}
           </div>
           
-          <div className="px-4 py-2 border-t border-[var(--border-default)] bg-[var(--bg-surface)] text-[10px] text-[var(--text-muted)] flex gap-4">
+          <div className="px-4 py-2 border-t border-(--border-default) bg-(--bg-surface) text-[10px] text-(--text-muted) flex gap-4">
             <span><kbd className="font-mono">↑↓</kbd> to navigate</span>
             <span><kbd className="font-mono">↵</kbd> to select</span>
           </div>

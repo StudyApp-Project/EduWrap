@@ -22,7 +22,7 @@ export function Avatar({ src, alt, initials, size = 'md', status, className = ''
         <img
           src={src}
           alt={alt || 'Avatar'}
-          className="w-full h-full rounded-full object-cover border border-[var(--border-default)] bg-[var(--bg-surface)]"
+          className="w-full h-full rounded-full object-cover border border-(--border-default) bg-(--bg-surface)"
         />
       ) : (
         <div
@@ -35,7 +35,7 @@ export function Avatar({ src, alt, initials, size = 'md', status, className = ''
       
       {status && (
         <span
-          className={`absolute bottom-0 right-0 rounded-full border-2 border-[var(--bg-base)] ${statusColors[status] || statusColors.offline}`}
+          className={`absolute bottom-0 right-0 rounded-full border-2 border-(--bg-base) ${statusColors[status] || statusColors.offline}`}
           style={{ width: '25%', height: '25%', minWidth: '8px', minHeight: '8px' }}
         />
       )}

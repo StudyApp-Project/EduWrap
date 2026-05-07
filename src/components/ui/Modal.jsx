@@ -40,10 +40,10 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-md' 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`relative w-full ${maxWidth} bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-2xl shadow-[var(--shadow-lg)] overflow-hidden flex flex-col max-h-[90vh]`}
+            className={`relative w-full ${maxWidth} bg-(--bg-elevated) border border-(--border-strong) rounded-2xl shadow-(--shadow-lg) overflow-hidden flex flex-col max-h-[90vh]`}
           >
             {title && (
-              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-default)] shrink-0">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-(--border-default) shrink-0">
                 <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-display)' }}>
                   {title}
                 </h2>

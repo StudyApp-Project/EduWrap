@@ -36,7 +36,7 @@ export default function AppLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)]">
+    <div className="flex h-screen overflow-hidden bg-(--bg-base) text-(--text-primary)">
       {/* Mobile Backdrop */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -74,7 +74,7 @@ export default function AppLayout() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute inset-0 flex flex-col"
+              className="absolute inset-0 flex flex-col will-change-transform transform-gpu"
             >
               <Outlet />
             </motion.div>

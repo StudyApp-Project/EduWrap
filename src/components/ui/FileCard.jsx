@@ -19,7 +19,7 @@ const colorMap = {
   doc: 'text-blue-600 bg-blue-600/10',
   archive: 'text-yellow-600 bg-yellow-600/10',
   link: 'text-emerald-500 bg-emerald-500/10',
-  default: 'text-[var(--text-secondary)] bg-[var(--bg-glass)]',
+  default: 'text-(--text-secondary) bg-(--bg-glass)',
 };
 
 export function FileCard({ name, type = 'default', size, date, url, onDownload, onMore }) {
@@ -33,10 +33,10 @@ export function FileCard({ name, type = 'default', size, date, url, onDownload, 
       </div>
       
       <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-[var(--text-primary)] truncate" title={name}>
+        <h4 className="text-sm font-medium text-(--text-primary) truncate" title={name}>
           {name}
         </h4>
-        <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[var(--text-muted)]">
+        <div className="flex items-center gap-2 mt-0.5 text-[10px] text-(--text-muted)">
           {size && <span>{size}</span>}
           {size && date && <span>•</span>}
           {date && <span>{date}</span>}

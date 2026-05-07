@@ -25,13 +25,13 @@ export default function StudyRoom() {
   return (
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* LEFT SIDEBAR */}
-      <aside className="hidden md:flex flex-col w-56 border-r border-[var(--border-default)] shrink-0" style={{ background: 'var(--bg-elevated)' }}>
-        <button className="flex items-center gap-2 px-4 py-3 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" onClick={() => navigate('/rooms')}>
+      <aside className="hidden md:flex flex-col w-56 border-r border-(--border-default) shrink-0" style={{ background: 'var(--bg-elevated)' }}>
+        <button className="flex items-center gap-2 px-4 py-3 text-xs text-(--text-secondary) hover:text-(--text-primary) transition-colors" onClick={() => navigate('/rooms')}>
           <ArrowLeft size={14} /> Back to Rooms
         </button>
 
         <div className="px-3 py-2">
-          <h2 className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-2 px-1">Channels</h2>
+          <h2 className="text-[10px] uppercase tracking-wider text-(--text-muted) font-semibold mb-2 px-1">Channels</h2>
           <div className="space-y-0.5">
             {[
               { id: 'chat', icon: MessageSquare, label: '# study-chat' },
@@ -42,7 +42,7 @@ export default function StudyRoom() {
                 className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition-all ${
                   activeTab === ch.id
                     ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.12)] text-[color:oklch(0.58_0.22_var(--accent-hue))] font-medium'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)]'
+                    : 'text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-glass)'
                 }`}
                 onClick={() => setActiveTab(ch.id)}
               >
@@ -55,7 +55,7 @@ export default function StudyRoom() {
 
         <div className="px-3 py-2 mt-2">
           <div className="flex items-center justify-between px-1 mb-2">
-            <h2 className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Members</h2>
+            <h2 className="text-[10px] uppercase tracking-wider text-(--text-muted) font-semibold">Members</h2>
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-500 font-medium">{onlineCount}</span>
           </div>
           <ul className="space-y-1">
@@ -67,12 +67,12 @@ export default function StudyRoom() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-xs truncate">{m.name}</div>
-                  <div className="text-[9px] text-[var(--text-muted)]">{m.role}</div>
+                  <div className="text-[9px] text-(--text-muted)">{m.role}</div>
                 </div>
               </li>
             ))}
           </ul>
-          <button className="w-full flex items-center gap-2 px-2 py-1.5 mt-2 rounded-lg text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-glass)] transition-colors">
+          <button className="w-full flex items-center gap-2 px-2 py-1.5 mt-2 rounded-lg text-xs text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-glass) transition-colors">
             <UserPlus size={14} /> Invite Member
           </button>
         </div>
@@ -80,19 +80,19 @@ export default function StudyRoom() {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-default)] shrink-0" style={{ background: 'var(--bg-elevated)' }}>
+        <header className="flex items-center justify-between px-4 py-3 border-b border-(--border-default) shrink-0" style={{ background: 'var(--bg-elevated)' }}>
           <div>
             <h1 className="text-sm font-semibold">{MOCK_ROOM.name}</h1>
-            <p className="text-[10px] text-[var(--text-muted)]">{MOCK_ROOM.subject} · {activeTab === 'chat' ? 'Chat' : 'Notes'}</p>
+            <p className="text-[10px] text-(--text-muted)">{MOCK_ROOM.subject} · {activeTab === 'chat' ? 'Chat' : 'Notes'}</p>
           </div>
           <div className="flex items-center gap-1">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-[var(--bg-glass)] transition-colors" onClick={() => navigate(`/room/${id}/call`)}>
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-(--bg-glass) transition-colors" onClick={() => navigate(`/room/${id}/call`)}>
               <Video size={14} /> <span className="hidden sm:inline">Call</span>
             </button>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-[var(--bg-glass)] transition-colors">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs hover:bg-(--bg-glass) transition-colors">
               <Sparkles size={14} /> <span className="hidden sm:inline">AI</span>
             </button>
-            <button className="p-1.5 rounded-lg hover:bg-[var(--bg-glass)] transition-colors">
+            <button className="p-1.5 rounded-lg hover:bg-(--bg-glass) transition-colors">
               <MoreVertical size={14} />
             </button>
           </div>

@@ -10,7 +10,7 @@ export function Tabs({ tabs, defaultTab, onChange, className = '' }) {
   };
 
   return (
-    <div className={`flex items-center gap-1 p-1 bg-[var(--bg-glass)] border border-[var(--border-default)] rounded-xl overflow-x-auto no-scrollbar ${className}`}>
+    <div className={`flex items-center gap-1 p-1 bg-(--bg-glass) border border-(--border-default) rounded-xl overflow-x-auto no-scrollbar ${className}`}>
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
@@ -18,7 +18,7 @@ export function Tabs({ tabs, defaultTab, onChange, className = '' }) {
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}
             className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap z-10 ${
-              isActive ? 'text-[color:oklch(0.58_0.22_var(--accent-hue))]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
+              isActive ? 'text-[color:oklch(0.58_0.22_var(--accent-hue))]' : 'text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-surface)'
             }`}
           >
             {isActive && (
@@ -31,7 +31,7 @@ export function Tabs({ tabs, defaultTab, onChange, className = '' }) {
             {tab.icon && <tab.icon size={16} />}
             {tab.label}
             {tab.badge && (
-              <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue))] text-white' : 'bg-[var(--bg-elevated)] text-[var(--text-muted)]'}`}>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue))] text-white' : 'bg-(--bg-elevated) text-(--text-muted)'}`}>
                 {tab.badge}
               </span>
             )}

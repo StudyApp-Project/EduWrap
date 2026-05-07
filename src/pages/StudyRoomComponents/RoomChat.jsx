@@ -53,13 +53,13 @@ export default function RoomChat() {
                 <span className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ background: 'oklch(0.58 0.22 var(--accent-hue))' }}>
                   {msg.author.charAt(0)}
                 </span>
-                <span className="text-xs font-medium text-[var(--text-secondary)]">{msg.author}</span>
+                <span className="text-xs font-medium text-(--text-secondary)">{msg.author}</span>
               </div>
             )}
             <div className={`max-w-[70%] px-3 py-2 rounded-2xl text-sm ${
               msg.self
                 ? 'rounded-br-md text-white'
-                : 'rounded-bl-md border border-[var(--border-default)]'
+                : 'rounded-bl-md border border-(--border-default)'
             }`}
               style={msg.self
                 ? { background: 'oklch(0.58 0.22 var(--accent-hue))' }
@@ -69,7 +69,7 @@ export default function RoomChat() {
               {msg.text}
             </div>
             <div className="flex items-center gap-1 mt-0.5 px-1">
-              <span className="text-[9px] text-[var(--text-muted)]">{msg.time}</span>
+              <span className="text-[9px] text-(--text-muted)">{msg.time}</span>
               {msg.self && (
                 <span style={{ color: msg.read ? 'oklch(0.58 0.22 var(--accent-hue))' : 'var(--text-muted)' }}>
                   {msg.read ? <CheckCheck size={10} /> : <Check size={10} />}
@@ -79,10 +79,10 @@ export default function RoomChat() {
           </div>
         ))}
         {typingUsers.length > 0 && (
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+          <div className="flex items-center gap-2 text-xs text-(--text-muted)">
             <div className="flex gap-0.5">
               {[0, 1, 2].map(i => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                <span key={i} className="w-1.5 h-1.5 rounded-full bg-(--text-muted) animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
               ))}
             </div>
             <span>{typingUsers.length === 1 ? `${typingUsers[0]} is typing...` : `${typingUsers.length} people are typing...`}</span>
@@ -91,8 +91,8 @@ export default function RoomChat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex items-center gap-2 p-3 border-t border-[var(--border-default)]" style={{ background: 'var(--bg-elevated)' }}>
-        <button className="p-2 rounded-lg hover:bg-[var(--bg-glass)] text-[var(--text-muted)] transition-colors">
+      <div className="flex items-center gap-2 p-3 border-t border-(--border-default)" style={{ background: 'var(--bg-elevated)' }}>
+        <button className="p-2 rounded-lg hover:bg-(--bg-glass) text-(--text-muted) transition-colors">
           <Paperclip size={16} />
         </button>
         <input
@@ -101,9 +101,9 @@ export default function RoomChat() {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKey}
-          className="flex-1 bg-[var(--bg-glass)] border border-[var(--border-default)] rounded-xl px-4 py-2 text-sm outline-none transition-colors focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.4)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+          className="flex-1 bg-(--bg-glass) border border-(--border-default) rounded-xl px-4 py-2 text-sm outline-none transition-colors focus:border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.4)] text-(--text-primary) placeholder:text-(--text-muted)"
         />
-        <button className="p-2 rounded-lg hover:bg-[var(--bg-glass)] text-[var(--text-muted)] transition-colors">
+        <button className="p-2 rounded-lg hover:bg-(--bg-glass) text-(--text-muted) transition-colors">
           <Smile size={16} />
         </button>
         <button onClick={sendMessage} className="p-2 rounded-xl text-white transition-all hover:opacity-90" style={{ background: 'oklch(0.58 0.22 var(--accent-hue))' }}>
