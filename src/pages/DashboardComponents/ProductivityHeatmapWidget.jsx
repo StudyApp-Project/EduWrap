@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 export default function ProductivityHeatmapWidget() {
-  // Generate fake heatmap data for the last 12 weeks x 7 days
   const cols = 12;
   const rows = 7;
-  const data = Array.from({ length: cols * rows }, (_, i) => {
-    // Random activity level 0-4
-    return Math.floor(Math.random() * 5);
-  });
+  
+  // Generate pseudo-random heatmap data without Math.random() to satisfy purity rules
+  const data = useMemo(() => {
+    return Array.from({ length: cols * rows }, (_, i) => (i * 7 + 13) % 5);
+  }, []);
 
   const getColor = (level) => {
     if (level === 0) return 'bg-(--border-subtle)';

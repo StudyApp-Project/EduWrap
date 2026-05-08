@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { UserProvider, useUser } from './contexts/UserContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { RoomProvider } from './contexts/RoomContext';
 import AppLayout from './layouts/AppLayout';
 import AuthLayout from './layouts/AuthLayout';
 import Landing from './pages/Landing';
@@ -47,36 +48,38 @@ export default function App() {
     <ThemeProvider>
       <BrowserRouter>
         <UserProvider>
-          <Routes>
-            {/* Public — no Layout */}
-            <Route path="/" element={<Landing />} />
+          <RoomProvider>
+            <Routes>
+              {/* Public — no Layout */}
+              <Route path="/" element={<Landing />} />
 
-            {/* Auth Routes */}
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-              <Route path="/onboarding" element={<PublicRoute><Onboarding /></PublicRoute>} />
-            </Route>
+              {/* Auth Routes */}
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+                <Route path="/onboarding" element={<PublicRoute><Onboarding /></PublicRoute>} />
+              </Route>
 
-            {/* App routes — inside AppLayout */}
-            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-              <Route path="/dashboard"     element={<Dashboard />} />
-              <Route path="/rooms"         element={<Rooms />} />
-              <Route path="/room/:id"      element={<StudyRoom />} />
-              <Route path="/room/:id/call" element={<Stub label="Video Call" />} />
-              <Route path="/notes"         element={<Stub label="Notes" />} />
-              <Route path="/flashcards"    element={<Stub label="Flashcards" />} />
-              <Route path="/quiz"          element={<Stub label="Quiz" />} />
-              <Route path="/doubts"        element={<Stub label="Doubts" />} />
-              <Route path="/files"         element={<Stub label="Files" />} />
-              <Route path="/profile"       element={<Stub label="Profile" />} />
-              <Route path="/settings"      element={<Stub label="Settings" />} />
-              <Route path="/sandbox"       element={<Sandbox />} />
+              {/* App routes — inside AppLayout */}
+              <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+                <Route path="/dashboard"     element={<Dashboard />} />
+                <Route path="/rooms"         element={<Rooms />} />
+                <Route path="/room/:id"      element={<StudyRoom />} />
+                <Route path="/room/:id/call" element={<Stub label="Video Call" />} />
+                <Route path="/notes"         element={<Stub label="Notes" />} />
+                <Route path="/flashcards"    element={<Stub label="Flashcards" />} />
+                <Route path="/quiz"          element={<Stub label="Quiz" />} />
+                <Route path="/doubts"        element={<Stub label="Doubts" />} />
+                <Route path="/files"         element={<Stub label="Files" />} />
+                <Route path="/profile"       element={<Stub label="Profile" />} />
+                <Route path="/settings"      element={<Stub label="Settings" />} />
+                <Route path="/sandbox"       element={<Sandbox />} />
 
-              {/* Catch-all */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
-          </Routes>
+                {/* Catch-all */}
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Route>
+            </Routes>
+          </RoomProvider>
         </UserProvider>
       </BrowserRouter>
     </ThemeProvider>
