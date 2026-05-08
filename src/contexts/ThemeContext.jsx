@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 const ThemeContext = createContext(null);
 
@@ -17,17 +18,20 @@ export function ThemeProvider({ children }) {
     document.documentElement.setAttribute('data-accent', accent);
   }, [accent]);
 
-  // Handle theme change
-  useEffect(() => {
-    localStorage.setItem('ew_theme', theme);
-
+  const applyThemeToDOM = (t) => {
     const root = document.documentElement;
-    if (theme === 'system') {
+    if (t === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       root.setAttribute('data-theme', systemTheme);
     } else {
-      root.setAttribute('data-theme', theme);
+      root.setAttribute('data-theme', t);
     }
+  };
+
+  // Handle theme change (fallback for initialization and external state changes)
+  useEffect(() => {
+    localStorage.setItem('ew_theme', theme);
+    applyThemeToDOM(theme);
   }, [theme]);
 
   // Watch for system theme changes
@@ -44,8 +48,44 @@ export function ThemeProvider({ children }) {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
 
-  const setTheme = (newTheme) => {
-    setThemeState(newTheme);
+  const setTheme = (newTheme, event = null) => {
+    // If no view transition API or no event passed, just update state normally
+    if (!document.startViewTransition || !event) {
+      setThemeState(newTheme);
+      return;
+    }
+
+    // Get click position for the ripple center
+    const x = event.clientX ?? innerWidth / 2;
+    const y = event.clientY ?? innerHeight / 2;
+    
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      flushSync(() => {
+        setThemeState(newTheme);
+      });
+      applyThemeToDOM(newTheme);
+    });
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+        },
+        {
+          duration: 500,
+          easing: 'ease-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
   };
 
   const setAccent = (newAccent) => {
