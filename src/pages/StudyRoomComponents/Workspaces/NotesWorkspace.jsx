@@ -12,7 +12,7 @@ export default function NotesWorkspace() {
   return (
     <div className="flex flex-col h-full bg-(--bg-primary)">
       {/* Topbar */}
-      <div className="px-6 py-4 border-b border-(--border-default) flex items-center justify-between shrink-0 bg-(--bg-elevated)/50 backdrop-blur-md">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-(--border-default) flex flex-wrap items-center justify-between gap-3 shrink-0 bg-(--bg-elevated)/50 backdrop-blur-md">
         <div className="flex items-center gap-4">
           <h2 className="font-bold text-lg">{activeClassroom.name}</h2>
           <div className="h-4 w-px bg-(--border-default)"></div>
@@ -20,24 +20,24 @@ export default function NotesWorkspace() {
             <Avatar initials="S" size="sm" className="border-2 border-(--bg-primary)" />
             <Avatar initials="A" size="sm" className="border-2 border-(--bg-primary)" />
           </div>
-          <span className="text-xs text-(--text-muted)">{activeClassroom.activeCursors || 2} editing</span>
+          <span className="text-xs text-(--text-muted) whitespace-nowrap">{activeClassroom.activeCursors || 2} editing</span>
         </div>
         
         <div className="flex items-center gap-2">
           <button onClick={() => alert("Create note functionality will be available in Phase 8.")} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-(--bg-glass) border border-(--border-subtle) text-xs font-bold hover:bg-(--bg-elevated) transition-colors">
             <Plus size={14} /> New Note
           </button>
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-bold hover:bg-purple-500/20 transition-colors">
+          <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-bold hover:bg-purple-500/20 transition-colors">
             <Sparkles size={14} /> AI Summarize
           </button>
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] text-[color:oklch(0.58_0.22_var(--accent-hue))] text-xs font-bold hover:bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.2)] transition-colors">
+          <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] text-[color:oklch(0.58_0.22_var(--accent-hue))] text-xs font-bold hover:bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.2)] transition-colors">
             <Share2 size={14} /> Share
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="px-6 py-2 border-b border-(--border-subtle) flex items-center gap-1 shrink-0 bg-(--bg-glass)">
+      <div className="px-4 sm:px-6 py-2 border-b border-(--border-subtle) flex items-center gap-1 shrink-0 bg-(--bg-glass)">
         <button className="p-1.5 rounded hover:bg-(--bg-elevated) text-(--text-secondary)"><Bold size={16} /></button>
         <button className="p-1.5 rounded hover:bg-(--bg-elevated) text-(--text-secondary)"><Italic size={16} /></button>
         <div className="w-px h-4 bg-(--border-default) mx-2"></div>
@@ -46,7 +46,7 @@ export default function NotesWorkspace() {
       </div>
 
       {/* Editor Area */}
-      <div className="flex-1 overflow-y-auto p-8 md:p-12 lg:px-24">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-12 lg:px-24">
         <div className="max-w-3xl mx-auto w-full relative">
           
           {/* Simulated Collaborative Cursors */}
