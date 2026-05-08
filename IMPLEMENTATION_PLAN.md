@@ -463,7 +463,7 @@ A Google Drive-style file explorer for study resources.
 
 ---
 
-### ⏳ PHASE 15 — Profile & Gamification
+### ✅ PHASE 15 — Profile & Gamification (DONE)
 > **Goal:** Rewarding, motivating profile.
 
 **Understanding & Instructions:**
@@ -477,17 +477,17 @@ A place where the user's hard work is visually rewarded.
 - Glowing effects on rare/high-level badges.
 - Smooth tooltips when hovering over heatmap squares.
 
-- [ ] Profile page — avatar, name, bio, stats
-- [ ] XP system — animated counter, level progress
-- [ ] Streak calendar — GitHub-style contribution grid
-- [ ] Badge wall — earned achievements
-- [ ] Study analytics — charts
-- [ ] Full leaderboard
-- [ ] Celebratory animations
+- [x] Profile page — avatar, name, bio, stats
+- [x] XP system — animated counter, level progress
+- [x] Streak calendar — GitHub-style contribution grid
+- [x] Badge wall — earned achievements
+- [x] Study analytics — charts
+- [x] Full leaderboard
+- [x] Celebratory animations
 
 ---
 
-### ⏳ PHASE 16 — Settings
+### ✅ PHASE 16 — Settings (DONE)
 > **Goal:** Clean, organized preferences.
 
 **Understanding & Instructions:**
@@ -497,13 +497,13 @@ A unified interface for configuring the app. Ensure it connects properly to the 
 - `SettingsLayout.jsx`: A 2-column layout (nav on left, form on right).
 - `ColorPicker.jsx`: A visual selector for the accent color system.
 
-- [ ] Theme switcher — light / dark / system
-- [ ] Accent color picker — visual grid
-- [ ] Notification preferences
-- [ ] Font size controls
-- [ ] Keyboard shortcuts reference
-- [ ] Account preferences
-- [ ] Danger zone — logout, reset
+- [x] Theme switcher — light / dark / system
+- [x] Accent color picker — visual grid
+- [x] Notification preferences
+- [x] Font size controls (merged with appearance)
+- [x] Keyboard shortcuts reference (REMOVED based on feedback)
+- [x] Account preferences
+- [x] Danger zone — logout, reset
 
 ---
 
