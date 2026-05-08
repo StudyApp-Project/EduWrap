@@ -321,10 +321,9 @@ const GlobalSpotlight = ({
         rgba(${glowColor}, 0.01) 65%,
         transparent 70%
       );
-      z-index: 200;
+      z-index: 10;
       opacity: 0;
       transform: translate(-50%, -50%);
-      mix-blend-mode: screen;
     `;
     document.body.appendChild(spotlight);
     spotlightRef.current = spotlight;
@@ -464,15 +463,15 @@ export const MagicBentoGrid = ({
             content: '';
             position: absolute;
             inset: 0;
-            padding: 2px;
+            border: 2px solid transparent;
             background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y),
                 rgba(${glowColor}, calc(var(--glow-intensity) * 0.8)) 0%,
                 rgba(${glowColor}, calc(var(--glow-intensity) * 0.4)) 30%,
-                transparent 60%);
+                transparent 60%) border-box;
             border-radius: inherit;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
             opacity: 1;

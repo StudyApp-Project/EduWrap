@@ -44,36 +44,36 @@ function DashboardContent() {
         <MagicBentoGrid className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column (The Doing Zone) - 4/12 */}
           <div className="lg:col-span-4 flex flex-col gap-6">
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <QuickTodoWidget />
             </MagicBentoCard>
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <ContinueStudyingWidget />
             </MagicBentoCard>
           </div>
 
           {/* Middle Column (The People Zone) - 5/12 */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <ActiveStudyRoomsWidget />
             </MagicBentoCard>
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <UpcomingSessionsWidget />
             </MagicBentoCard>
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <ProductivityHeatmapWidget />
             </MagicBentoCard>
           </div>
 
           {/* Right Column (The Smart Zone) - 3/12 */}
           <div className="lg:col-span-3 flex flex-col gap-6">
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <SmartNotificationsWidget />
             </MagicBentoCard>
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <ActivityFeedWidget />
             </MagicBentoCard>
-            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1 min-h-[300px]">
+            <MagicBentoCard className="p-0 rounded-2xl bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) overflow-hidden flex-1">
               <LeaderboardMiniWidget />
             </MagicBentoCard>
           </div>
