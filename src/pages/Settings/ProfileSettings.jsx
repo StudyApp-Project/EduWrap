@@ -58,7 +58,7 @@ export default function ProfileSettings() {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-(--border-default) bg-(--bg-elevated) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200"
+                className="w-full px-4 py-2.5 rounded-xl border border-(--border-strong) bg-(--bg-base) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200"
                 placeholder="Your name"
                 required
               />
@@ -72,7 +72,7 @@ export default function ProfileSettings() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-(--border-default) bg-(--bg-elevated) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200"
+                className="w-full px-4 py-2.5 rounded-xl border border-(--border-strong) bg-(--bg-base) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200"
                 placeholder="you@example.com"
                 required
               />
@@ -86,7 +86,7 @@ export default function ProfileSettings() {
                 value={formData.bio}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2.5 rounded-xl border border-(--border-default) bg-(--bg-elevated) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200 resize-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-(--border-strong) bg-(--bg-base) text-(--text-primary) placeholder:text-(--text-muted) focus:outline-none focus:ring-2 focus:ring-[color:oklch(0.58_0.22_var(--accent-hue))] transition-all duration-200 resize-none"
                 placeholder="Tell us a little about yourself"
               />
             </div>
