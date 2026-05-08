@@ -8,7 +8,9 @@ import Rooms from './pages/Rooms';
 import StudyRoom from './pages/StudyRoom';
 import Sandbox from './pages/Sandbox';
 import Notes from './pages/Notes';
+import Flashcards from './pages/Flashcards';
 import { NotesProvider } from './contexts/NotesContext';
+import { FlashcardProvider } from './contexts/FlashcardContext';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -25,8 +27,9 @@ export default function App() {
       <BrowserRouter>
         <UserProvider>
           <NotesProvider>
-            <Routes>
-              {/* Public — no AppLayout */}
+            <FlashcardProvider>
+              <Routes>
+                {/* Public — no AppLayout */}
             <Route path="/" element={<Landing />} />
 
             {/* App routes — inside AppLayout */}
@@ -36,7 +39,7 @@ export default function App() {
               <Route path="/room/:id"      element={<StudyRoom />} />
               <Route path="/room/:id/call" element={<Stub label="Video Call" />} />
               <Route path="/notes"         element={<Notes />} />
-              <Route path="/flashcards"    element={<Stub label="Flashcards" />} />
+              <Route path="/flashcards"    element={<Flashcards />} />
               <Route path="/quiz"          element={<Stub label="Quiz" />} />
               <Route path="/doubts"        element={<Stub label="Doubts" />} />
               <Route path="/files"         element={<Stub label="Files" />} />
@@ -47,7 +50,8 @@ export default function App() {
               {/* Catch-all */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
-            </Routes>
+              </Routes>
+            </FlashcardProvider>
           </NotesProvider>
         </UserProvider>
       </BrowserRouter>
