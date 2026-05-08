@@ -12,6 +12,7 @@ import Sandbox from './pages/Sandbox';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
+import SettingsLayout from './pages/Settings/SettingsLayout';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -72,7 +73,7 @@ export default function App() {
                 <Route path="/doubts"        element={<Stub label="Doubts" />} />
                 <Route path="/files"         element={<Stub label="Files" />} />
                 <Route path="/profile"       element={<Stub label="Profile" />} />
-                <Route path="/settings"      element={<Stub label="Settings" />} />
+                <Route path="/settings"      element={<SettingsLayout />} />
                 <Route path="/sandbox"       element={<Sandbox />} />
 
                 {/* Catch-all */}

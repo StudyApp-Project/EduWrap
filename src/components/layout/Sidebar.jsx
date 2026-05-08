@@ -10,13 +10,13 @@ import { CountBadge } from '../ui/Badge';
 import { useUser } from '../../contexts/UserContext';
 
 const NAV_ITEMS = [
-  { to: '/dashboard',  icon: LayoutDashboard,       label: 'Dashboard',   shortcut: '⌘D' },
-  { to: '/rooms',      icon: Users,                 label: 'Study Rooms', shortcut: '⌘R', badge: 2 },
-  { to: '/notes',      icon: FileText,              label: 'Notes',       shortcut: '⌘N' },
-  { to: '/flashcards', icon: Layers,                label: 'Flashcards',  shortcut: '⌘F' },
-  { to: '/quiz',       icon: HelpCircle,            label: 'Quiz',        shortcut: '⌘Q' },
-  { to: '/doubts',     icon: MessageCircleQuestion, label: 'Doubts',      shortcut: '⌘B' },
-  { to: '/files',      icon: Folder,                label: 'Files',       shortcut: '⌘O' },
+  { to: '/dashboard',  icon: LayoutDashboard,       label: 'Dashboard' },
+  { to: '/rooms',      icon: Users,                 label: 'Study Rooms', badge: 2 },
+  { to: '/notes',      icon: FileText,              label: 'Notes' },
+  { to: '/flashcards', icon: Layers,                label: 'Flashcards' },
+  { to: '/quiz',       icon: HelpCircle,            label: 'Quiz' },
+  { to: '/doubts',     icon: MessageCircleQuestion, label: 'Doubts' },
+  { to: '/files',      icon: Folder,                label: 'Files' },
 ];
 
 const BOTTOM_ITEMS = [
@@ -24,7 +24,7 @@ const BOTTOM_ITEMS = [
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
-function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick, className = '' }) {
+function NavItem({ to, icon: Icon, label, badge, isCollapsed, onClick, className = '' }) {
   const content = (
     <NavLink
       to={to}
@@ -62,11 +62,7 @@ function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick,
             <CountBadge count={badge} className="ml-auto shrink-0" />
           )}
 
-          {!isCollapsed && shortcut && !isActive && (
-            <span className="hidden lg:block text-[10px] text-(--text-muted) opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-              {shortcut}
-            </span>
-          )}
+
 
           {/* Badge dot for collapsed state */}
           {isCollapsed && badge && (
@@ -182,12 +178,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, toggleCollapse }
           {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
 
-        {!isCollapsed && (
-          <div className="hidden lg:flex items-center gap-2 px-3 pt-3 pb-1 mt-2 text-[10px] text-(--text-muted) justify-center border-t border-(--border-default)">
-            <Keyboard size={12} />
-            <span>Press ⌘K for commands</span>
-          </div>
-        )}
+
       </div>
     </motion.aside>
   );
