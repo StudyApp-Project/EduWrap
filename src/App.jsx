@@ -60,10 +60,17 @@ export default function App() {
             <FlashcardProvider>
               <Routes>
                 {/* Public — no AppLayout */}
-            <Route path="/" element={<Landing />} />
+                <Route path="/" element={<Landing />} />
 
-            {/* App routes — inside AppLayout */}
-            <Route element={<AppLayout />}>
+                {/* Auth Routes */}
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                  <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+                  <Route path="/onboarding" element={<PublicRoute><Onboarding /></PublicRoute>} />
+                </Route>
+
+                {/* App routes — inside AppLayout */}
+                <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/dashboard"     element={<Dashboard />} />
               <Route path="/rooms"         element={<Rooms />} />
               <Route path="/room/:id"      element={<StudyRoom />} />

@@ -100,8 +100,8 @@ export default function Landing() {
               <IconButton variant="ghost" aria-label="Toggle Theme" onClick={toggleTheme}>
                 {theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? <Sun size={18} /> : <Moon size={18} />}
               </IconButton>
-              <Button variant="ghost" className="hidden sm:flex" onClick={() => navigate('/dashboard')}>Login</Button>
-              <Button variant="primary" onClick={() => navigate('/dashboard')}>Get Started</Button>
+              <Button variant="ghost" className="hidden sm:flex" onClick={() => navigate('/login')}>Login</Button>
+              <Button variant="primary" onClick={() => navigate('/signup')}>Get Started</Button>
             </div>
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function Landing() {
             <p className="text-xl text-(--text-secondary) mb-10 max-w-2xl mx-auto">
               Join thousands of students who are already studying smarter, not harder. It takes 30 seconds to sign up.
             </p>
-            <Button size="lg" variant="primary" className="h-16 px-10 text-lg shadow-(--shadow-glow)" onClick={() => navigate('/dashboard')}>
+            <Button size="lg" variant="primary" className="h-16 px-10 text-lg shadow-(--shadow-glow)" onClick={() => navigate('/signup')}>
               Get Started for Free <ArrowRight size={24} className="ml-2" />
             </Button>
             <div className="flex items-center justify-center gap-4 mt-8 text-sm text-(--text-muted)">
