@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   ArrowRight, BookOpen, MessageSquare, Users, Sparkles, 
   Zap, Shield, Clock, BrainCircuit, Target, Video, CheckCircle2, Moon, Sun
@@ -10,6 +10,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Avatar } from '../components/ui/Avatar';
+import LiquidEther from '../components/ui/LiquidEther';
+import dashboardImg from '../assets/dashboard.png';
 
 const FEATURES = [
   { icon: Users, title: 'Collaborative Study Rooms', desc: 'Virtual spaces to study together with video, audio, and screenshare.', color: 'blue' },
@@ -38,9 +40,6 @@ const TESTIMONIALS = [
 export default function Landing() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 1000], [0, -100]);
-  const y2 = useTransform(scrollY, [0, 1000], [0, 150]);
 
   const { theme, setTheme } = useTheme();
   const toggleTheme = (e) => {
@@ -53,8 +52,17 @@ export default function Landing() {
   };
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -62,16 +70,15 @@ export default function Landing() {
     <div className="relative min-h-screen bg-(--bg-base) overflow-hidden font-sans">
       
       {/* ─── ANIMATED BACKGROUND ─── */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-(--bg-base)" />
-        <motion.div 
-          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-30 will-change-transform transform-gpu"
-          style={{ background: 'oklch(0.58 0.22 var(--accent-hue))', y: y1 }}
-        />
-        <motion.div 
-          className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full blur-[150px] opacity-20 will-change-transform transform-gpu"
-          style={{ background: 'oklch(0.58 0.22 calc(var(--accent-hue) + 60))', y: y2 }}
-        />
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ transform: 'translateZ(0)' }}>
+        <div className="w-full h-full pointer-events-auto">
+          <LiquidEther 
+            resolution={0.25}
+            iterationsPoisson={16}
+            iterationsViscous={16}
+            dt={0.02}
+          />
+        </div>
       </div>
 
       {/* ─── FLOATING NAVBAR ─── */}
@@ -82,7 +89,7 @@ export default function Landing() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3' : 'py-5'}`}
       >
         <div className="max-w-6xl mx-auto px-6">
-          <div className={`flex items-center justify-between rounded-2xl px-4 py-2.5 transition-all duration-300 ${scrolled ? 'bg-(--bg-elevated)/80 backdrop-blur-xl border border-(--border-strong) shadow-(--shadow-md)' : 'bg-transparent border-transparent'}`}>
+          <div className={`flex items-center justify-between rounded-2xl px-4 py-2.5 transition-all duration-300 ${scrolled ? 'bg-(--bg-elevated)/95 border border-(--border-strong) shadow-(--shadow-md)' : 'bg-transparent border-transparent'}`}>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.50_0.22_var(--accent-hue))] text-white flex items-center justify-center font-bold text-sm shadow-(--shadow-glow)">
                 EW
@@ -115,7 +122,7 @@ export default function Landing() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-4xl mx-auto flex flex-col items-center"
         >
-          <Badge variant="accent" className="mb-8 px-4 py-1.5 text-sm rounded-full shadow-(--shadow-glow) backdrop-blur-md">
+          <Badge variant="accent" className="mb-8 px-4 py-1.5 text-sm rounded-full shadow-(--shadow-glow)">
             <Sparkles size={14} className="mr-2" /> EduWrap is now in public beta
           </Badge>
           
@@ -134,7 +141,7 @@ export default function Landing() {
             <Button size="lg" variant="primary" className="w-full sm:w-auto h-14 px-8 text-base shadow-(--shadow-glow)" onClick={() => navigate('/signup')}>
               Start Learning for Free <ArrowRight size={20} className="ml-2" />
             </Button>
-            <Button size="lg" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-base bg-(--bg-glass) backdrop-blur-xl">
+            <Button size="lg" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-base bg-(--bg-glass)">
               <Clock size={20} className="mr-2" /> Watch Demo
             </Button>
           </div>
@@ -148,29 +155,19 @@ export default function Landing() {
           className="max-w-5xl mx-auto mt-20 relative"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-(--bg-base) via-transparent to-transparent z-10 bottom-0 h-1/3 pointer-events-none" />
-          <div className="rounded-2xl border border-(--border-strong) bg-(--bg-elevated)/80 backdrop-blur-2xl shadow-2xl overflow-hidden ring-1 ring-white/10">
+          <div className="rounded-2xl border border-(--border-strong) bg-(--bg-elevated)/95 shadow-2xl overflow-hidden ring-1 ring-white/10">
             <div className="h-12 border-b border-(--border-strong) flex items-center px-4 gap-2 bg-(--bg-surface)">
               <div className="w-3 h-3 rounded-full bg-red-500/80" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
               <div className="w-3 h-3 rounded-full bg-green-500/80" />
             </div>
-            <div className="h-[400px] md:h-[600px] flex p-4 gap-4 bg-(--bg-base)/50">
-              <div className="w-64 hidden md:flex flex-col gap-2 opacity-50">
-                <div className="h-8 bg-(--bg-surface) rounded-md" />
-                <div className="h-8 bg-(--bg-surface) rounded-md" />
-                <div className="h-8 bg-(--bg-surface) rounded-md" />
-              </div>
-              <div className="flex-1 flex flex-col gap-4">
-                <div className="h-32 bg-(--bg-surface) rounded-xl border border-(--border-default)" />
-                <div className="flex-1 bg-(--bg-surface) rounded-xl border border-(--border-default)" />
-              </div>
-            </div>
+            <img src={dashboardImg} alt="EduWrap Dashboard Interface" className="w-full h-auto block border-b border-(--border-strong)" />
           </div>
         </motion.div>
       </section>
 
       {/* ─── STATS SECTION ─── */}
-      <section className="relative z-10 py-12 border-y border-(--border-default) bg-(--bg-surface)/50 backdrop-blur-lg">
+      <section className="relative z-10 py-12 border-y border-(--border-default) bg-(--bg-surface)/90">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {STATS.map((stat, i) => (
@@ -215,7 +212,7 @@ export default function Landing() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <Card depth="glass" interactive className="h-full bg-(--bg-surface)/40 hover:bg-(--bg-surface)/80 transition-colors duration-300">
+                <Card interactive className="h-full bg-(--bg-surface)/90 hover:bg-(--bg-elevated) transition-colors duration-300">
                   <CardContent className="p-6 flex flex-col h-full">
                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-(--border-default)"
                       style={{ 
@@ -236,7 +233,7 @@ export default function Landing() {
       </section>
 
       {/* ─── TESTIMONIALS ─── */}
-      <section id="testimonials" className="relative z-10 py-24 bg-(--bg-surface)/30 border-y border-(--border-default)">
+      <section id="testimonials" className="relative z-10 py-24 bg-(--bg-surface)/90 border-y border-(--border-default)">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16" style={{ fontFamily: 'var(--font-display)' }}>
             Loved by students everywhere
@@ -250,7 +247,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <Card depth="glass" className="h-full bg-(--bg-elevated)/50">
+                <Card className="h-full bg-(--bg-elevated)">
                   <CardContent className="p-8">
                     <div className="flex gap-1 text-[color:oklch(0.58_0.22_var(--accent-hue))] mb-6">
                       {[1,2,3,4,5].map(star => <Sparkles key={star} size={16} className="fill-current" />)}
@@ -281,7 +278,7 @@ export default function Landing() {
           className="max-w-4xl mx-auto text-center p-12 md:p-16 rounded-[2.5rem] relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.40_0.25_var(--accent-hue))] opacity-10" />
-          <div className="absolute inset-0 border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)] rounded-[2.5rem] glass" />
+          <div className="absolute inset-0 border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)] rounded-[2.5rem] bg-(--bg-elevated)/90" />
           
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-extrabold mb-6" style={{ fontFamily: 'var(--font-display)' }}>
