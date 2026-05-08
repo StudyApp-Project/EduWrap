@@ -43,12 +43,12 @@ export default function Landing() {
   const y2 = useTransform(scrollY, [0, 1000], [0, 150]);
 
   const { theme, setTheme } = useTheme();
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
     if (theme === 'system') {
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(isDark ? 'light' : 'dark');
+      setTheme(isDark ? 'light' : 'dark', e);
     } else {
-      setTheme(theme === 'dark' ? 'light' : 'dark');
+      setTheme(theme === 'dark' ? 'light' : 'dark', e);
     }
   };
 
@@ -98,7 +98,7 @@ export default function Landing() {
 
             <div className="flex items-center gap-3">
               <IconButton variant="ghost" aria-label="Toggle Theme" onClick={toggleTheme}>
-                {theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? <Sun size={18} /> : <Moon size={18} />}
+                {theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? <Moon size={18} /> : <Sun size={18} />}
               </IconButton>
               <Button variant="ghost" className="hidden sm:flex" onClick={() => navigate('/login')}>Login</Button>
               <Button variant="primary" onClick={() => navigate('/signup')}>Get Started</Button>
