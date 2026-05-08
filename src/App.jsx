@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
 import StudyRoom from './pages/StudyRoom';
 import Sandbox from './pages/Sandbox';
+import Notes from './pages/Notes';
+import { NotesProvider } from './contexts/NotesContext';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -22,8 +24,9 @@ export default function App() {
     <ThemeProvider>
       <BrowserRouter>
         <UserProvider>
-          <Routes>
-            {/* Public — no AppLayout */}
+          <NotesProvider>
+            <Routes>
+              {/* Public — no AppLayout */}
             <Route path="/" element={<Landing />} />
 
             {/* App routes — inside AppLayout */}
@@ -32,7 +35,7 @@ export default function App() {
               <Route path="/rooms"         element={<Rooms />} />
               <Route path="/room/:id"      element={<StudyRoom />} />
               <Route path="/room/:id/call" element={<Stub label="Video Call" />} />
-              <Route path="/notes"         element={<Stub label="Notes" />} />
+              <Route path="/notes"         element={<Notes />} />
               <Route path="/flashcards"    element={<Stub label="Flashcards" />} />
               <Route path="/quiz"          element={<Stub label="Quiz" />} />
               <Route path="/doubts"        element={<Stub label="Doubts" />} />
@@ -44,7 +47,8 @@ export default function App() {
               {/* Catch-all */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
-          </Routes>
+            </Routes>
+          </NotesProvider>
         </UserProvider>
       </BrowserRouter>
     </ThemeProvider>
