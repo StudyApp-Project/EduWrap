@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, Plus, Hash, X, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Users, Search, Plus, Hash, X, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 import { useRoom } from '../contexts/RoomContext';
 import { Button, IconButton } from '../components/ui/Button';
 
