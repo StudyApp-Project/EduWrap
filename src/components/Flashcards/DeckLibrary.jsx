@@ -1,21 +1,11 @@
 import { useFlashcards } from '../../contexts/FlashcardContext';
-import { Layers, Play, BrainCircuit, Plus } from 'lucide-react';
+import { Layers, Play, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import CreateDeckModal from './CreateDeckModal';
 
 export default function DeckLibrary() {
-  const { decks, setActiveDeckId, generateDeckFromPDF } = useFlashcards();
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      await generateDeckFromPDF('Sample_PDF_Notes.pdf');
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const { decks, setActiveDeckId, deleteDeck } = useFlashcards();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="p-8 md:p-12 max-w-7xl mx-auto w-full h-full overflow-y-auto">
@@ -26,15 +16,10 @@ export default function DeckLibrary() {
         </div>
         <div className="flex gap-3">
           <button 
-            onClick={handleGenerate}
-            disabled={isGenerating}
-            className="flex items-center gap-2 bg-(--bg-elevated) border border-(--accent)/30 text-(--accent) px-4 py-2.5 rounded-xl font-medium hover:bg-(--accent)/10 transition-colors cursor-pointer disabled:opacity-50"
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-(--accent) text-white px-5 py-2.5 rounded-xl font-medium shadow-md shadow-(--accent)/20 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer"
           >
-            <BrainCircuit className={`w-4 h-4 ${isGenerating ? 'animate-pulse' : ''}`} />
-            {isGenerating ? 'Generating...' : 'AI Generate'}
-          </button>
-          <button className="flex items-center gap-2 bg-(--accent) text-white px-4 py-2.5 rounded-xl font-medium shadow-md shadow-(--accent)/20 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer">
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             New Deck
           </button>
         </div>
@@ -52,9 +37,18 @@ export default function DeckLibrary() {
                 <div className="w-12 h-12 rounded-xl bg-(--accent)/10 text-(--accent) flex items-center justify-center">
                   <Layers className="w-6 h-6" />
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-(--text-primary)">{progress}%</div>
-                  <div className="text-xs text-(--text-tertiary)">Mastered</div>
+                <div className="flex items-start gap-3">
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-(--text-primary)">{progress}%</div>
+                    <div className="text-xs text-(--text-tertiary)">Mastered</div>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteDeck(deck.id); }}
+                    className="p-1.5 text-(--text-tertiary) hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors cursor-pointer"
+                    title="Delete Deck"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
               
@@ -74,6 +68,11 @@ export default function DeckLibrary() {
           );
         })}
       </div>
+      
+      <CreateDeckModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 }

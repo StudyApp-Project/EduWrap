@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { getPDFText } from '../services/pdfService';
 
 const FlashcardContext = createContext(undefined);
 
@@ -54,27 +55,105 @@ export function FlashcardProvider({ children }) {
     ));
   };
 
-  // Mock AI Generator
-  const generateDeckFromPDF = async (pdfTitle) => {
-    // In a real app, this would send PDF text to an AI API.
-    // For now, we mock a delay and return a generated deck.
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const newDeck = {
-          id: crypto.randomUUID(),
-          title: `Generated: ${pdfTitle}`,
-          description: `AI generated flashcards based on ${pdfTitle}`,
-          cards: [
-            { id: crypto.randomUUID(), front: 'What is the main topic of this PDF?', back: 'The PDF discusses advanced study techniques and memory retention.', status: 'new' },
-            { id: crypto.randomUUID(), front: 'Define Spaced Repetition.', back: 'A learning technique that incorporates increasing intervals of time between subsequent review of previously learned material.', status: 'new' },
-            { id: crypto.randomUUID(), front: 'What is active recall?', back: 'The process of actively stimulating memory during the learning process rather than passively reading.', status: 'new' }
-          ],
-          lastStudied: null
-        };
-        setDecks(prev => [newDeck, ...prev]);
-        resolve(newDeck.id);
-      }, 1500);
+  const deleteDeck = (deckId) => {
+    setDecks(prev => prev.filter(deck => deck.id !== deckId));
+    if (activeDeckId === deckId) setActiveDeckId(null);
+  };
+
+  // Local NLP Generator
+  const generateDeck = async (selectedPdfIds, selectedPdfTitles, count) => {
+    let combinedText = '';
+
+    // 1. Fetch extracted text from IndexedDB for all selected PDFs
+    for (const id of selectedPdfIds) {
+      try {
+        const text = await getPDFText(id);
+        if (text) combinedText += text + '\n\n';
+      } catch (err) {
+        console.error("Failed to read text for pdf:", id, err);
+      }
+    }
+
+    // 2. Fallback if no text found
+    if (!combinedText || combinedText.trim().length === 0) {
+      combinedText = `Artificial intelligence is a branch of computer science that aims to create intelligent machines. Machine learning allows computers to learn without being explicitly programmed. Photosynthesis is the process by which green plants make their own food using sunlight. The mitochondrion is often referred to as the powerhouse of the cell because it generates most of the cell's supply of adenosine triphosphate. Gravity is a fundamental force of nature that attracts a body toward the center of the earth, or toward any other physical body having mass. React is a declarative, efficient, and flexible JavaScript library for building user interfaces. Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. State is a React object that is used to contain data or information about the component. Props are arguments passed into React components. A Hook is a special function that lets you "hook into" React features. Spaced repetition is an evidence-based learning technique that is usually performed with flashcards. Active recall involves actively stimulating your memory for a piece of information. The atomic number of an element is the number of protons in the nucleus of an atom. Water is a polar molecule, which means it has a slight positive charge on one side and a slight negative charge on the other. DNA carries the genetic instructions used in the growth, development, functioning, and reproduction of all living organisms. Newton's first law of motion states that an object will remain at rest unless acted upon by an external force. Energy cannot be created or destroyed, only transformed from one form to another. The human brain contains approximately eighty-six billion neurons. Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. The blockchain is a growing list of records, called blocks, that are linked together using cryptography.`;
+    }
+
+    // 3. Simple NLP to extract valid sentences
+    // Split by periods, question marks, or exclamation points followed by a space
+    const allSentences = combinedText
+      .replace(/\n/g, ' ')
+      .split(/[.?!](?=\s|$)/)
+      .map(s => s.trim())
+      .filter(s => s.length > 40 && s.length < 200 && !s.includes('http')); // Filter out too short/long, or URLs
+
+    // Shuffle sentences
+    const shuffled = allSentences.sort(() => 0.5 - Math.random());
+    
+    // Take requested count (or max available)
+    const selectedSentences = shuffled.slice(0, count);
+
+    // 4. Generate fill-in-the-blank cards
+    const generatedCards = selectedSentences.map((sentence, i) => {
+      const words = sentence.split(' ').filter(w => w.length > 0);
+      
+      // Try to find a good keyword: 
+      // 1. Longest word > 5 chars, OR
+      // 2. Capitalized word that isn't the first word
+      let keywordIndex = -1;
+      let longestLen = 0;
+      
+      for (let w = 0; w < words.length; w++) {
+        const cleanWord = words[w].replace(/[^a-zA-Z]/g, '');
+        // Prefer capitalized words in the middle of the sentence
+        if (w > 0 && cleanWord.length > 3 && cleanWord[0] === cleanWord[0].toUpperCase()) {
+          keywordIndex = w;
+          break;
+        }
+        if (cleanWord.length > longestLen && cleanWord.length > 5) {
+          longestLen = cleanWord.length;
+          keywordIndex = w;
+        }
+      }
+
+      if (keywordIndex === -1) keywordIndex = Math.floor(words.length / 2); // fallback
+
+      const targetWord = words[keywordIndex];
+      const cleanTarget = targetWord.replace(/[^a-zA-Z-]/g, ''); // Remove punctuation for the answer
+      
+      words[keywordIndex] = "________";
+      
+      return {
+        id: crypto.randomUUID(),
+        front: `Fill in the blank:\n\n"${words.join(' ')}."`,
+        back: cleanTarget || targetWord,
+        status: 'new'
+      };
     });
+
+    // If we didn't have enough valid sentences, just duplicate some of the valid ones to meet the count
+    while (generatedCards.length < count && generatedCards.length > 0) {
+      const randomExistingCard = generatedCards[Math.floor(Math.random() * generatedCards.length)];
+      generatedCards.push({
+        ...randomExistingCard,
+        id: crypto.randomUUID()
+      });
+    }
+
+    const title = selectedPdfTitles.length > 1 
+      ? `Generated from ${selectedPdfTitles.length} PDFs`
+      : `Generated: ${selectedPdfTitles[0] || 'Custom Deck'}`;
+
+    const newDeck = {
+      id: crypto.randomUUID(),
+      title,
+      description: `Smart flashcards automatically extracted from your PDF materials.`,
+      cards: generatedCards,
+      lastStudied: null
+    };
+
+    setDecks(prev => [newDeck, ...prev]);
+    return newDeck.id;
   };
 
   return (
@@ -85,7 +164,8 @@ export function FlashcardProvider({ children }) {
         setActiveDeckId,
         updateCardStatus,
         updateDeckLastStudied,
-        generateDeckFromPDF
+        generateDeck,
+        deleteDeck
       }}
     >
       {children}
