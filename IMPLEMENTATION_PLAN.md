@@ -140,18 +140,18 @@
 
 ---
 
-### PHASE 5 — Authentication Pages
+### ✅ PHASE 5 — Authentication Pages (DONE)
 > Premium glassmorphic auth flow. No real auth — just UI + localStorage.
 
-- [ ] **Login Page** — email/password form, social login buttons (Google, GitHub), animated background, floating shapes
-- [ ] **Signup Page** — similar to login with name field
-- [ ] **Onboarding Flow** — multi-step stepper after "signup"
-  - Step 1: Name + avatar selection
-  - Step 2: Select subjects/interests
-  - Step 3: Study preferences
-  - Step 4: Welcome screen → navigate to dashboard
-- [ ] Store user data in UserContext + localStorage
-- [ ] Animated transitions between steps
+- [x] **Login Page** — email/password form, social login buttons (Google, GitHub), animated background, floating shapes
+- [x] **Signup Page** — similar to login with name field, password strength meter
+- [x] **Onboarding Flow** — multi-step stepper after "signup"
+  - Step 1: Name + avatar selection (with randomize button)
+  - Step 2: Select subjects/interests (grid of pills)
+  - Step 3: Study preferences (visual selection cards)
+  - Step 4: Confetti celebration → navigate to dashboard
+- [x] Store user data in UserContext + localStorage
+- [x] Animated transitions between steps using framer-motion
 
 ---
 
