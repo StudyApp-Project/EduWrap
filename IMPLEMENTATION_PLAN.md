@@ -463,7 +463,7 @@ A Google Drive-style file explorer for study resources.
 
 ---
 
-### ⏳ PHASE 15 — Profile & Gamification
+### ✅ PHASE 15 — Profile & Gamification (DONE)
 > **Goal:** Rewarding, motivating profile.
 
 **Understanding & Instructions:**
@@ -477,13 +477,13 @@ A place where the user's hard work is visually rewarded.
 - Glowing effects on rare/high-level badges.
 - Smooth tooltips when hovering over heatmap squares.
 
-- [ ] Profile page — avatar, name, bio, stats
-- [ ] XP system — animated counter, level progress
-- [ ] Streak calendar — GitHub-style contribution grid
-- [ ] Badge wall — earned achievements
-- [ ] Study analytics — charts
-- [ ] Full leaderboard
-- [ ] Celebratory animations
+- [x] Profile page — avatar, name, bio, stats
+- [x] XP system — animated counter, level progress
+- [x] Streak calendar — GitHub-style contribution grid
+- [x] Badge wall — earned achievements
+- [x] Study analytics — charts
+- [x] Full leaderboard
+- [x] Celebratory animations
 
 ---
 
