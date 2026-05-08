@@ -66,7 +66,7 @@ export default function AppLayout() {
         />
         
         {/* Page Content with AnimatePresence for transitions */}
-        <main className="flex-1 overflow-auto relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

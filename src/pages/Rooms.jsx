@@ -12,11 +12,12 @@ const CATEGORIES = [
   { id: 'med', label: 'Medicine', icon: '🧬' },
   { id: 'art', label: 'Arts & Design', icon: '🎨' },
   { id: 'bus', label: 'Business', icon: '📊' },
+  { id: 'personal', label: 'My Rooms', icon: '👤' },
 ];
 
 export default function Rooms() {
   const navigate = useNavigate();
-  const { rooms, setActiveRoom, addRoom } = useRoom();
+  const { rooms, setActiveRoom, addRoom, deleteRoom } = useRoom();
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
@@ -35,8 +36,11 @@ export default function Rooms() {
   const [createState, setCreateState] = useState('idle');
 
   const filteredRooms = rooms.filter(room => {
-    const matchesCat = activeCategory === 'all' || room.category.toLowerCase().includes(activeCategory.toLowerCase()) || activeCategory === room.id.slice(5, 8); // simplified matching
     const matchesSearch = room.name.toLowerCase().includes(searchQuery.toLowerCase()) || room.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+    if (activeCategory === 'personal') {
+      return room.isPersonal && matchesSearch;
+    }
+    const matchesCat = activeCategory === 'all' || room.category.toLowerCase().includes(activeCategory.toLowerCase()) || activeCategory === room.id.slice(5, 8); // simplified matching
     return matchesCat && matchesSearch;
   });
 
@@ -88,7 +92,7 @@ export default function Rooms() {
   };
 
   return (
-    <div className="min-h-screen bg-(--bg-primary) p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-(--bg-primary) p-4 md:p-8 max-w-7xl mx-auto space-y-8 w-full min-w-0">
       
       {/* Header */}
       <motion.div 
@@ -101,7 +105,7 @@ export default function Rooms() {
           <p className="text-(--text-secondary)">Discover active study communities and collaborate in real-time.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Button variant="secondary" onClick={() => setIsJoinModalOpen(true)}>
             <Hash size={18} className="mr-2" /> Join via Code
           </Button>
@@ -116,9 +120,9 @@ export default function Rooms() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex flex-col md:flex-row items-center justify-between gap-4 bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-2xl p-2 shadow-(--shadow-sm)"
+        className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-2xl p-2 shadow-(--shadow-sm) min-w-0"
       >
-        <div className="flex items-center overflow-x-auto no-scrollbar w-full md:w-auto p-1 gap-2">
+        <div className="flex items-center overflow-x-auto no-scrollbar w-full md:w-auto p-1 gap-2 min-w-0">
           {CATEGORIES.map(cat => (
             <button
               key={cat.id}
@@ -159,18 +163,34 @@ export default function Rooms() {
               onClick={() => handleEnterRoom(room.id)}
               className="group cursor-pointer block h-full"
             >
-              <MagicBentoCard className="bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-3xl p-6 flex flex-col h-full !transition-none">
+              <MagicBentoCard className="bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-3xl p-6 flex flex-col h-full !transition-none overflow-hidden">
                 {/* Subtle animated background glow on hover */}
-                <div className="absolute top-0 right-0 w-48 h-48 bg-[color:oklch(0.58_0.22_var(--accent-hue))] opacity-0 blur-[60px] group-hover:opacity-10 transition-opacity duration-500 rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-[color:oklch(0.58_0.22_var(--accent-hue))] opacity-0 blur-[60px] group-hover:opacity-10 transition-opacity duration-500 rounded-full pointer-events-none" />
 
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.50_0.22_var(--accent-hue))] text-white flex items-center justify-center text-2xl shadow-lg">
                     {room.icon}
                   </div>
                   
-                  {/* Live Indicator */}
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-wider border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Live
+                  {/* Live Indicator & Delete */}
+                  <div className="flex items-center gap-2">
+                    {room.isPersonal && (
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Are you sure you want to delete this study room?')) {
+                            deleteRoom(room.id);
+                          }
+                        }}
+                        className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors z-20"
+                        title="Delete Room"
+                      >
+                        <X size={14} strokeWidth={3} />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-wider border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Live
+                    </div>
                   </div>
                 </div>
 
