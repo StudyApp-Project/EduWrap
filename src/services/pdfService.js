@@ -38,13 +38,23 @@ function cleanExtractedText(raw) {
 }
 
 /**
- * Render a PDF page to a canvas and run OCR via Tesseract.js
+ * Render a PDF page to a canvas and run OCR via Tesseract.js.
+ * Tesseract.js is optional — if not installed, OCR is silently skipped.
  */
 async function ocrPage(page) {
+  let Tesseract;
   try {
-    // Dynamically import tesseract.js only when needed (saves bundle size)
-    const Tesseract = await import('tesseract.js');
+    // Dynamic import so Vite doesn't statically analyze this as a hard dependency.
+    // Using a variable prevents Vite's import-analysis plugin from flagging it.
+    const moduleName = 'tesseract.js';
+    Tesseract = await import(/* @vite-ignore */ moduleName);
+  } catch {
+    // tesseract.js is not installed — skip OCR silently
+    console.info('[EduWrap] tesseract.js not installed — OCR skipped. Install it with `npm i tesseract.js` if you need OCR for scanned PDFs.');
+    return '';
+  }
 
+  try {
     // Render page to a canvas
     const scale = 1.5; // Balance between accuracy and speed
     const viewport = page.getViewport({ scale });
