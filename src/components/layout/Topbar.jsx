@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Bell, Search, Menu, Zap, Settings, LogOut, User as UserIcon, Moon, Sun } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -7,8 +8,9 @@ import { Dropdown, DropdownItem, DropdownDivider } from '../ui/Dropdown';
 import { CountBadge } from '../ui/Badge';
 
 export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
-  const { user } = useUser();
+  const { user, logout } = useUser();
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
   const toggleTheme = () => {
     // If system, switch to the opposite of current OS theme, else toggle
@@ -95,7 +97,7 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
           <DropdownItem icon={UserIcon}>Profile</DropdownItem>
           <DropdownItem icon={Settings}>Account Settings</DropdownItem>
           <DropdownDivider />
-          <DropdownItem icon={LogOut} className="text-red-500 hover:!bg-red-500/10">Log out</DropdownItem>
+          <DropdownItem icon={LogOut} className="text-red-500 hover:!bg-red-500/10" onClick={() => { logout(); navigate('/'); }}>Log out</DropdownItem>
         </Dropdown>
       </div>
     </header>

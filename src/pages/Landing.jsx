@@ -131,7 +131,7 @@ export default function Landing() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <Button size="lg" variant="primary" className="w-full sm:w-auto h-14 px-8 text-base shadow-(--shadow-glow)" onClick={() => navigate('/dashboard')}>
+            <Button size="lg" variant="primary" className="w-full sm:w-auto h-14 px-8 text-base shadow-(--shadow-glow)" onClick={() => navigate('/signup')}>
               Start Learning for Free <ArrowRight size={20} className="ml-2" />
             </Button>
             <Button size="lg" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-base bg-(--bg-glass) backdrop-blur-xl">

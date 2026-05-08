@@ -1,12 +1,13 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard, Users, FileText, Layers, HelpCircle,
   Folder, User, Settings, Keyboard, X, MessageCircleQuestion,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, LogOut
 } from 'lucide-react';
 import { Tooltip } from '../ui/Tooltip';
 import { CountBadge } from '../ui/Badge';
+import { useUser } from '../../contexts/UserContext';
 
 const NAV_ITEMS = [
   { to: '/dashboard',  icon: LayoutDashboard,       label: 'Dashboard',   shortcut: '⌘D' },
@@ -23,7 +24,7 @@ const BOTTOM_ITEMS = [
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
-function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick }) {
+function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick, className = '' }) {
   const content = (
     <NavLink
       to={to}
@@ -33,7 +34,7 @@ function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick 
          ${isActive
            ? 'bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.15)] text-[color:oklch(0.58_0.22_var(--accent-hue))] font-semibold shadow-(--shadow-glow) border border-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)]'
            : 'text-(--text-secondary) hover:text-(--text-primary) hover:bg-(--bg-glass) border border-transparent'
-         }`
+         } ${className}`
       }
       aria-label={`Navigate to ${label}`}
     >
@@ -87,6 +88,15 @@ function NavItem({ to, icon: Icon, label, shortcut, badge, isCollapsed, onClick 
 }
 
 export default function Sidebar({ isOpen, onClose, isCollapsed, toggleCollapse }) {
+  const { logout } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    navigate('/');
+  };
+
   return (
     <motion.aside
       className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col h-screen border-r border-(--border-default) shrink-0 transition-transform duration-300 ease-in-out lg:translate-x-0 bg-(--bg-elevated) backdrop-blur-xl ${
@@ -144,6 +154,25 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, toggleCollapse }
             onClick={() => { if (window.innerWidth < 1024) onClose(); }} 
           />
         ))}
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 text-red-500 hover:bg-red-500/10 border border-transparent"
+          aria-label="Log out"
+        >
+          <LogOut size={18} className="shrink-0" aria-hidden="true" />
+          {!isCollapsed && (
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex-1 text-left"
+            >
+              Log out
+            </motion.span>
+          )}
+        </button>
 
         {/* Collapse Toggle (Desktop only) */}
         <button
