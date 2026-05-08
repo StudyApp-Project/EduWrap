@@ -68,8 +68,8 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
               <IconButton variant="ghost" aria-label="Notifications">
                 <Bell size={18} />
               </IconButton>
-              <div className="absolute top-1.5 right-1.5">
-                <CountBadge count={3} variant="error" size="sm" className="!text-[8px] !px-1 shadow-sm" />
+              <div className="absolute -top-0.5 -right-0.5 pointer-events-none">
+                <CountBadge count={3} variant="error" size="sm" className="!text-[8px] !min-w-[16px] !h-[16px] !px-1 shadow-sm" />
               </div>
             </div>
           }
@@ -94,8 +94,8 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
             <div className="text-sm font-semibold text-(--text-primary)">{user.name}</div>
             <div className="text-xs text-(--text-muted) truncate">{user.email || 'student@university.edu'}</div>
           </div>
-          <DropdownItem icon={UserIcon}>Profile</DropdownItem>
-          <DropdownItem icon={Settings}>Account Settings</DropdownItem>
+          <DropdownItem icon={UserIcon} onClick={() => navigate('/profile')}>Profile</DropdownItem>
+          <DropdownItem icon={Settings} onClick={() => navigate('/settings')}>Account Settings</DropdownItem>
           <DropdownDivider />
           <DropdownItem icon={LogOut} className="text-red-500 hover:!bg-red-500/10" onClick={() => { logout(); navigate('/'); }}>Log out</DropdownItem>
         </Dropdown>
