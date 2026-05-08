@@ -18,6 +18,7 @@ import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 import SettingsLayout from './pages/Settings/SettingsLayout';
+import Doubts from './pages/Doubts';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -78,7 +79,7 @@ export default function App() {
               <Route path="/notes"         element={<Notes />} />
               <Route path="/flashcards"    element={<Flashcards />} />
               <Route path="/quiz"          element={<Stub label="Quiz" />} />
-              <Route path="/doubts"        element={<Stub label="Doubts" />} />
+              <Route path="/doubts"        element={<Doubts />} />
               <Route path="/files"         element={<Stub label="Files" />} />
 <Route path="/profile" element={<Profile />} />
 <Route path="/settings" element={<SettingsLayout />} />

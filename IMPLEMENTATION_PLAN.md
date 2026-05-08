@@ -408,7 +408,7 @@ This is purely a visual interface mocking a Zoom/Discord call.
 
 ---
 
-### ⏳ PHASE 13 — Doubt Board
+### ✅ PHASE 13 — Doubt Board (DONE)
 > **Goal:** Academic Q&A feed.
 
 **Understanding & Instructions:**
