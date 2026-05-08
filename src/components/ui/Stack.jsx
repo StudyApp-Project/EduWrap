@@ -51,7 +51,7 @@ export default function Stack({ cards, renderCard, onSwipeRight, onSwipeLeft, on
               animate={{
                 scale,
                 y: yOffset,
-                opacity: 1,
+                opacity: isTop ? 1 : 0.7,
               }}
               exit={{ 
                 x: 300, 
@@ -66,8 +66,12 @@ export default function Stack({ cards, renderCard, onSwipeRight, onSwipeLeft, on
               onDragEnd={isTop ? handleDragEnd : undefined}
               whileDrag={{ scale: 1.05, cursor: "grabbing" }}
             >
-              <div className="w-full h-full pointer-events-auto">
+              <div className="w-full h-full pointer-events-auto relative">
                 {renderCard(card)}
+                {/* Blur overlay on non-top cards so text doesn't bleed through */}
+                {!isTop && (
+                  <div className="absolute inset-0 rounded-3xl backdrop-blur-md bg-(--bg-elevated)/60 pointer-events-none" />
+                )}
               </div>
             </motion.div>
           );

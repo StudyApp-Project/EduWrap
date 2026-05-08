@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getPDFText } from '../services/pdfService';
+import { generateFlashcards } from '../services/questionGenerator';
 
 const FlashcardContext = createContext(undefined);
 
@@ -50,7 +51,7 @@ export function FlashcardProvider({ children }) {
   };
 
   const updateDeckLastStudied = (deckId) => {
-    setDecks(prev => prev.map(deck => 
+    setDecks(prev => prev.map(deck =>
       deck.id === deckId ? { ...deck, lastStudied: new Date().toISOString() } : deck
     ));
   };
@@ -60,7 +61,10 @@ export function FlashcardProvider({ children }) {
     if (activeDeckId === deckId) setActiveDeckId(null);
   };
 
-  // Local NLP Generator
+  /**
+   * Generate a flashcard deck from selected PDFs.
+   * Uses the questionGenerator service for smart question extraction.
+   */
   const generateDeck = async (selectedPdfIds, selectedPdfTitles, count) => {
     let combinedText = '';
 
@@ -74,81 +78,32 @@ export function FlashcardProvider({ children }) {
       }
     }
 
-    // 2. Fallback if no text found
-    if (!combinedText || combinedText.trim().length === 0) {
-      combinedText = `Artificial intelligence is a branch of computer science that aims to create intelligent machines. Machine learning allows computers to learn without being explicitly programmed. Photosynthesis is the process by which green plants make their own food using sunlight. The mitochondrion is often referred to as the powerhouse of the cell because it generates most of the cell's supply of adenosine triphosphate. Gravity is a fundamental force of nature that attracts a body toward the center of the earth, or toward any other physical body having mass. React is a declarative, efficient, and flexible JavaScript library for building user interfaces. Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. State is a React object that is used to contain data or information about the component. Props are arguments passed into React components. A Hook is a special function that lets you "hook into" React features. Spaced repetition is an evidence-based learning technique that is usually performed with flashcards. Active recall involves actively stimulating your memory for a piece of information. The atomic number of an element is the number of protons in the nucleus of an atom. Water is a polar molecule, which means it has a slight positive charge on one side and a slight negative charge on the other. DNA carries the genetic instructions used in the growth, development, functioning, and reproduction of all living organisms. Newton's first law of motion states that an object will remain at rest unless acted upon by an external force. Energy cannot be created or destroyed, only transformed from one form to another. The human brain contains approximately eighty-six billion neurons. Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. The blockchain is a growing list of records, called blocks, that are linked together using cryptography.`;
+    // 2. Generate cards using the smart question generator
+    let cards = [];
+    if (combinedText.trim().length > 50) {
+      cards = generateFlashcards(combinedText, count);
     }
 
-    // 3. Simple NLP to extract valid sentences
-    // Split by periods, question marks, or exclamation points followed by a space
-    const allSentences = combinedText
-      .replace(/\n/g, ' ')
-      .split(/[.?!](?=\s|$)/)
-      .map(s => s.trim())
-      .filter(s => s.length > 40 && s.length < 200 && !s.includes('http')); // Filter out too short/long, or URLs
-
-    // Shuffle sentences
-    const shuffled = allSentences.sort(() => 0.5 - Math.random());
-    
-    // Take requested count (or max available)
-    const selectedSentences = shuffled.slice(0, count);
-
-    // 4. Generate fill-in-the-blank cards
-    const generatedCards = selectedSentences.map((sentence, i) => {
-      const words = sentence.split(' ').filter(w => w.length > 0);
-      
-      // Try to find a good keyword: 
-      // 1. Longest word > 5 chars, OR
-      // 2. Capitalized word that isn't the first word
-      let keywordIndex = -1;
-      let longestLen = 0;
-      
-      for (let w = 0; w < words.length; w++) {
-        const cleanWord = words[w].replace(/[^a-zA-Z]/g, '');
-        // Prefer capitalized words in the middle of the sentence
-        if (w > 0 && cleanWord.length > 3 && cleanWord[0] === cleanWord[0].toUpperCase()) {
-          keywordIndex = w;
-          break;
-        }
-        if (cleanWord.length > longestLen && cleanWord.length > 5) {
-          longestLen = cleanWord.length;
-          keywordIndex = w;
-        }
-      }
-
-      if (keywordIndex === -1) keywordIndex = Math.floor(words.length / 2); // fallback
-
-      const targetWord = words[keywordIndex];
-      const cleanTarget = targetWord.replace(/[^a-zA-Z-]/g, ''); // Remove punctuation for the answer
-      
-      words[keywordIndex] = "________";
-      
-      return {
+    // 3. If we couldn't generate enough, the PDF might be image-only or too sparse
+    if (cards.length === 0) {
+      console.warn("No text found in selected PDFs — generating fallback deck");
+      cards = [{
         id: crypto.randomUUID(),
-        front: `Fill in the blank:\n\n"${words.join(' ')}."`,
-        back: cleanTarget || targetWord,
-        status: 'new'
-      };
-    });
-
-    // If we didn't have enough valid sentences, just duplicate some of the valid ones to meet the count
-    while (generatedCards.length < count && generatedCards.length > 0) {
-      const randomExistingCard = generatedCards[Math.floor(Math.random() * generatedCards.length)];
-      generatedCards.push({
-        ...randomExistingCard,
-        id: crypto.randomUUID()
-      });
+        front: 'No readable text found in the selected PDF(s).',
+        back: 'This PDF may be image-based (scanned). Try selecting a different PDF with selectable text.',
+        status: 'new',
+      }];
     }
 
-    const title = selectedPdfTitles.length > 1 
+    const title = selectedPdfTitles.length > 1
       ? `Generated from ${selectedPdfTitles.length} PDFs`
       : `Generated: ${selectedPdfTitles[0] || 'Custom Deck'}`;
 
     const newDeck = {
       id: crypto.randomUUID(),
       title,
-      description: `Smart flashcards automatically extracted from your PDF materials.`,
-      cards: generatedCards,
+      description: `Smart flashcards extracted from your study materials.`,
+      cards,
       lastStudied: null
     };
 

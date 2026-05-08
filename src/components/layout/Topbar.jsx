@@ -12,13 +12,13 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
     // If system, switch to the opposite of current OS theme, else toggle
     if (theme === 'system') {
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(isDark ? 'light' : 'dark');
+      setTheme(isDark ? 'light' : 'dark', e);
     } else {
-      setTheme(theme === 'dark' ? 'light' : 'dark');
+      setTheme(theme === 'dark' ? 'light' : 'dark', e);
     }
   };
 
@@ -58,7 +58,7 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
       {/* Actions */}
       <div className="flex items-center gap-3">
         <IconButton variant="ghost" aria-label="Toggle Theme" onClick={toggleTheme}>
-          {theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? <Sun size={18} /> : <Moon size={18} />}
+          {theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? <Moon size={18} /> : <Sun size={18} />}
         </IconButton>
 
         <Dropdown 

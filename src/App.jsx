@@ -11,8 +11,10 @@ import StudyRoom from './pages/StudyRoom';
 import Sandbox from './pages/Sandbox';
 import Notes from './pages/Notes';
 import Flashcards from './pages/Flashcards';
+import Quiz from './pages/Quiz';
 import { NotesProvider } from './contexts/NotesContext';
 import { FlashcardProvider } from './contexts/FlashcardContext';
+import { QuizProvider } from './contexts/QuizContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
@@ -58,6 +60,7 @@ export default function App() {
 
           <NotesProvider>
             <FlashcardProvider>
+              <QuizProvider>
               <Routes>
                 {/* Public — no AppLayout */}
                 <Route path="/" element={<Landing />} />
@@ -77,7 +80,7 @@ export default function App() {
               <Route path="/room/:id/call" element={<Stub label="Video Call" />} />
               <Route path="/notes"         element={<Notes />} />
               <Route path="/flashcards"    element={<Flashcards />} />
-              <Route path="/quiz"          element={<Stub label="Quiz" />} />
+              <Route path="/quiz"          element={<Quiz />} />
               <Route path="/doubts"        element={<Stub label="Doubts" />} />
               <Route path="/files"         element={<Stub label="Files" />} />
 <Route path="/profile" element={<Profile />} />
@@ -88,6 +91,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
               </Routes>
+              </QuizProvider>
             </FlashcardProvider>
           </NotesProvider>
 </RoomProvider>

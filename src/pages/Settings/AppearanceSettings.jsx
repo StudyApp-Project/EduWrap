@@ -42,7 +42,7 @@ export default function AppearanceSettings() {
               return (
                 <button
                   key={t.id}
-                  onClick={() => setTheme(t.id)}
+                  onClick={(e) => setTheme(t.id, e)}
                   className={`relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200 ${
                     isActive
                       ? 'border-[color:oklch(0.58_0.22_var(--accent-hue))] bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.05)] shadow-(--shadow-glow)'

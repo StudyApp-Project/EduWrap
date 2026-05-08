@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { processPDFFromUrl, processPDFFromFile, getPDFText } from '../services/pdfService';
+import { processPDFFromUrl, processPDFFromFile, getPDFText, clearAllPDFText, reprocessPDF } from '../services/pdfService';
 
 const NotesContext = createContext(undefined);
 
@@ -70,9 +70,17 @@ export function NotesProvider({ children }) {
     localStorage.setItem('eduwrap_notes', JSON.stringify(notes));
   }, [notes]);
 
-  // Background indexing of PDF text
+  // Background indexing of PDF text (with one-time cache bust for new extractor)
   useEffect(() => {
     const indexPDFs = async () => {
+      // One-time: clear stale cache so improved extractor + OCR runs fresh
+      const version = localStorage.getItem('eduwrap_pdf_cache_version');
+      if (version !== '5') {
+        await clearAllPDFText();
+        localStorage.setItem('eduwrap_pdf_cache_version', '5');
+        console.log('[EduWrap] Cleared stale PDF cache — re-indexing with fixed OCR.');
+      }
+
       for (const note of notes) {
         if (note.type === 'pdf' && note.url) {
           try {
@@ -86,8 +94,8 @@ export function NotesProvider({ children }) {
         }
       }
     };
-    // Run indexing in background
-    setTimeout(indexPDFs, 2000);
+    // Run indexing in background after a short delay
+    setTimeout(indexPDFs, 1500);
   }, [notes]); // Re-run if notes change (like a new pdf is added)
 
   const addNote = () => {

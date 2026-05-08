@@ -4,6 +4,7 @@ import ContributionHeatmap from './ProfileComponents/ContributionHeatmap';
 import BadgeWall from './ProfileComponents/BadgeWall';
 import WeeklyGoalRing from './ProfileComponents/WeeklyGoalRing';
 import ActivityTimeline from './ProfileComponents/ActivityTimeline';
+import QuizHistory from './ProfileComponents/QuizHistory';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,6 +46,11 @@ export default function Profile() {
           <div className="lg:col-span-1">
             <ActivityTimeline />
           </div>
+        </div>
+
+        {/* Quiz Performance */}
+        <div>
+          <QuizHistory />
         </div>
       </motion.div>
     </div>
