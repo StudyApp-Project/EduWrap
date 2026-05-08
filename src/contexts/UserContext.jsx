@@ -3,19 +3,24 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const UserContext = createContext(null);
 
 const DEFAULT_USER = {
-  id: 'u1',
-  name: 'Alex Chen',
-  email: 'alex@eduwrap.io',
-  avatar: null,
-  xp: 2400,
-  level: 12,
-  streak: 5,
+  isLoggedIn: false,
+  user: {
+    id: null,
+    name: '',
+    email: '',
+    avatar: null,
+    xp: 0,
+    level: 1,
+    streak: 0,
+    subjects: [],
+    studyPreferences: {}
+  }
 };
 
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(() => {
+  const [session, setSession] = useState(() => {
     try {
-      const stored = localStorage.getItem('ew_user');
+      const stored = localStorage.getItem('ew_user_session');
       return stored ? JSON.parse(stored) : DEFAULT_USER;
     } catch {
       return DEFAULT_USER;
@@ -23,17 +28,30 @@ export function UserProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem('ew_user', JSON.stringify(user));
-  }, [user]);
+    localStorage.setItem('ew_user_session', JSON.stringify(session));
+  }, [session]);
 
-  const updateUser = (updates) => setUser(prev => ({ ...prev, ...updates }));
+  const login = (userData) => {
+    setSession({
+      isLoggedIn: true,
+      user: { ...DEFAULT_USER.user, ...userData, xp: 2400, level: 12, streak: 5 } // Mock stats
+    });
+  };
+
+  const updateUser = (updates) => {
+    setSession(prev => ({
+      ...prev,
+      user: { ...prev.user, ...updates }
+    }));
+  };
+
   const logout = () => {
-    localStorage.removeItem('ew_user');
-    setUser(DEFAULT_USER);
+    localStorage.removeItem('ew_user_session');
+    setSession(DEFAULT_USER);
   };
 
   return (
-    <UserContext.Provider value={{ user, updateUser, logout }}>
+    <UserContext.Provider value={{ ...session, login, updateUser, logout }}>
       {children}
     </UserContext.Provider>
   );

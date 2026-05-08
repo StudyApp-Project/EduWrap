@@ -1,7 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { UserProvider } from './contexts/UserContext';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { UserProvider, useUser } from './contexts/UserContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { RoomProvider } from './contexts/RoomContext';
 import AppLayout from './layouts/AppLayout';
+import AuthLayout from './layouts/AuthLayout';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
@@ -11,6 +13,11 @@ import Notes from './pages/Notes';
 import Flashcards from './pages/Flashcards';
 import { NotesProvider } from './contexts/NotesContext';
 import { FlashcardProvider } from './contexts/FlashcardContext';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Onboarding from './pages/Onboarding';
+import Profile from './pages/Profile';
+import SettingsLayout from './pages/Settings/SettingsLayout';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -21,11 +28,34 @@ function Stub({ label }) {
   );
 }
 
+// Protected Route Guard
+function ProtectedRoute({ children }) {
+  const { isLoggedIn } = useUser();
+  const location = useLocation();
+  
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  return children;
+}
+
+// Public Route Guard (Redirects to dashboard if already logged in)
+function PublicRoute({ children }) {
+  const { isLoggedIn } = useUser();
+  
+  if (isLoggedIn) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+}
+
 export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
         <UserProvider>
+    <RoomProvider>
+
           <NotesProvider>
             <FlashcardProvider>
               <Routes>
@@ -43,8 +73,8 @@ export default function App() {
               <Route path="/quiz"          element={<Stub label="Quiz" />} />
               <Route path="/doubts"        element={<Stub label="Doubts" />} />
               <Route path="/files"         element={<Stub label="Files" />} />
-              <Route path="/profile"       element={<Stub label="Profile" />} />
-              <Route path="/settings"      element={<Stub label="Settings" />} />
+<Route path="/profile" element={<Profile />} />
+<Route path="/settings" element={<SettingsLayout />} />
               <Route path="/sandbox"       element={<Sandbox />} />
 
               {/* Catch-all */}
@@ -53,6 +83,7 @@ export default function App() {
               </Routes>
             </FlashcardProvider>
           </NotesProvider>
+</RoomProvider>
         </UserProvider>
       </BrowserRouter>
     </ThemeProvider>
