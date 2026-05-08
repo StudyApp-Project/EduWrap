@@ -3,6 +3,7 @@ import { Layers, Play, Plus, Trash2, Sparkles, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import CreateDeckModal from './CreateDeckModal';
+import { MagicBentoGrid, MagicBentoCard } from '../ui/MagicBento';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -64,66 +65,68 @@ export default function DeckLibrary() {
           initial="hidden"
           animate="visible"
           variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {decks.map(deck => {
-            const totalCards = deck.cards.length;
-            const knownCards = deck.cards.filter(c => c.status === 'known').length;
-            const progress = totalCards === 0 ? 0 : Math.round((knownCards / totalCards) * 100);
+          <MagicBentoGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {decks.map(deck => {
+              const totalCards = deck.cards.length;
+              const knownCards = deck.cards.filter(c => c.status === 'known').length;
+              const progress = totalCards === 0 ? 0 : Math.round((knownCards / totalCards) * 100);
 
-            return (
-              <motion.div
-                key={deck.id}
-                variants={cardVariants}
-                whileHover={{ y: -4, boxShadow: 'var(--shadow-glow)' }}
-                className="bg-(--bg-glass) backdrop-blur-xl rounded-2xl p-6 border border-(--border-subtle) flex flex-col h-64 transition-all duration-300 group relative overflow-hidden"
-              >
-                {/* Subtle gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.03)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
+              return (
+                <motion.div
+                  key={deck.id}
+                  variants={cardVariants}
+                  className="block h-full"
+                >
+                  <MagicBentoCard className="bg-(--bg-glass) backdrop-blur-xl rounded-2xl p-6 border border-(--border-subtle) flex flex-col h-64 group relative overflow-hidden transition-none">
+                    {/* Subtle gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.03)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
 
-                <div className="flex justify-between items-start mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] text-[color:oklch(0.58_0.22_var(--accent-hue))] flex items-center justify-center">
-                    <Layers className="w-6 h-6" />
-                  </div>
-                  <div className="flex items-start gap-2">
-                    {/* Circular progress */}
-                    <div className="relative w-12 h-12 flex items-center justify-center">
-                      <svg className="w-full h-full transform -rotate-90">
-                        <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-(--border-default)" />
-                        <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-[color:oklch(0.58_0.22_var(--accent-hue))]" strokeDasharray={113} strokeDashoffset={113 - (113 * progress) / 100} strokeLinecap="round" />
-                      </svg>
-                      <span className="absolute text-xs font-bold text-(--text-primary)">{progress}%</span>
+                    <div className="flex justify-between items-start mb-4 relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] text-[color:oklch(0.58_0.22_var(--accent-hue))] flex items-center justify-center">
+                        <Layers className="w-6 h-6" />
+                      </div>
+                      <div className="flex items-start gap-2">
+                        {/* Circular progress */}
+                        <div className="relative w-12 h-12 flex items-center justify-center">
+                          <svg className="w-full h-full transform -rotate-90">
+                            <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-(--border-default)" />
+                            <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-[color:oklch(0.58_0.22_var(--accent-hue))]" strokeDasharray={113} strokeDashoffset={113 - (113 * progress) / 100} strokeLinecap="round" />
+                          </svg>
+                          <span className="absolute text-xs font-bold text-(--text-primary)">{progress}%</span>
+                        </div>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); deleteDeck(deck.id); }}
+                          className="p-1.5 text-(--text-muted) hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer opacity-0 group-hover:opacity-100"
+                          title="Delete Deck"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); deleteDeck(deck.id); }}
-                      className="p-1.5 text-(--text-muted) hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer opacity-0 group-hover:opacity-100"
-                      title="Delete Deck"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
 
-                <h3 className="text-lg font-bold text-(--text-primary) mb-1 truncate relative z-10" style={{ fontFamily: 'var(--font-display)' }}>{deck.title}</h3>
-                <p className="text-sm text-(--text-secondary) line-clamp-2 mb-auto relative z-10">{deck.description}</p>
+                    <h3 className="text-lg font-bold text-(--text-primary) mb-1 truncate relative z-10" style={{ fontFamily: 'var(--font-display)' }}>{deck.title}</h3>
+                    <p className="text-sm text-(--text-secondary) line-clamp-2 mb-auto relative z-10">{deck.description}</p>
 
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-(--border-default) relative z-10">
-                  <div className="flex items-center gap-2 text-sm text-(--text-muted)">
-                    <BookOpen className="w-4 h-4" />
-                    {totalCards} cards
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setActiveDeckId(deck.id)}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.50_0.22_calc(var(--accent-hue)-30))] text-white flex items-center justify-center cursor-pointer shadow-lg shadow-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)]"
-                  >
-                    <Play className="w-4 h-4 translate-x-[1px]" />
-                  </motion.button>
-                </div>
-              </motion.div>
-            );
-          })}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-(--border-default) relative z-10">
+                      <div className="flex items-center gap-2 text-sm text-(--text-muted)">
+                        <BookOpen className="w-4 h-4" />
+                        {totalCards} cards
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setActiveDeckId(deck.id)}
+                        className="w-10 h-10 rounded-full bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue))] to-[color:oklch(0.50_0.22_calc(var(--accent-hue)-30))] text-white flex items-center justify-center cursor-pointer shadow-lg shadow-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)]"
+                      >
+                        <Play className="w-4 h-4 translate-x-[1px]" />
+                      </motion.button>
+                    </div>
+                  </MagicBentoCard>
+                </motion.div>
+              );
+            })}
+          </MagicBentoGrid>
         </motion.div>
       )}
 

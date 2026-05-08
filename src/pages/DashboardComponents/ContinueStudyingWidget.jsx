@@ -11,7 +11,7 @@ export default function ContinueStudyingWidget() {
   return (
     <motion.div 
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      className="bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-3xl p-6 shadow-(--shadow-glow) flex flex-col"
+      className="p-6 flex flex-col h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg">Jump Back In</h3>

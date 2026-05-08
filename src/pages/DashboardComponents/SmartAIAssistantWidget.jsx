@@ -8,7 +8,7 @@ export default function SmartAIAssistantWidget() {
   return (
     <motion.div 
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-      className="relative bg-(--bg-glass) backdrop-blur-xl border border-(--border-subtle) rounded-3xl p-6 shadow-(--shadow-glow) overflow-hidden group"
+      className="relative p-6 overflow-hidden group h-full"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.1)] to-transparent opacity-50"></div>
       <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-[color:oklch(0.58_0.22_var(--accent-hue)_/_0.3)] to-transparent rounded-3xl z-0 animate-[shimmer_3s_infinite]"></div>
