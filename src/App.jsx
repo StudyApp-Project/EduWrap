@@ -21,6 +21,7 @@ import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 import SettingsLayout from './pages/Settings/SettingsLayout';
 import Doubts from './pages/Doubts';
+import Files from './pages/Files';
 
 // Stub — built in a later phase
 function Stub({ label }) {
@@ -87,7 +88,7 @@ export default function App() {
               <Route path="/doubts"        element={<Doubts />} />
 
 
-              <Route path="/files"         element={<Stub label="Files" />} />
+              <Route path="/files"         element={<Files />} />
 <Route path="/profile" element={<Profile />} />
 <Route path="/settings" element={<SettingsLayout />} />
               <Route path="/sandbox"       element={<Sandbox />} />
