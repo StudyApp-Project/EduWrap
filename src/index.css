@@ -110,6 +110,7 @@
 
   #root {
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   a {
@@ -171,3 +172,23 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
+/* ─── REDUCED MOTION (ACCESSIBILITY) ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── NO SCROLLBAR UTILITY ─── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

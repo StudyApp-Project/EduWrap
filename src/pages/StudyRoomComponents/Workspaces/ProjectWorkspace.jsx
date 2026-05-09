@@ -11,13 +11,13 @@ export default function ProjectWorkspace() {
   return (
     <div className="flex flex-col h-full bg-(--bg-primary) overflow-hidden">
       {/* Topbar */}
-      <div className="px-6 py-4 border-b border-(--border-default) flex items-center justify-between shrink-0 bg-(--bg-elevated)/50 backdrop-blur-md">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-(--border-default) flex flex-wrap items-center justify-between gap-3 shrink-0 bg-(--bg-elevated)/50 backdrop-blur-md">
         <div>
           <h2 className="font-bold text-lg">{activeClassroom.name}</h2>
           <p className="text-xs text-(--text-muted)">Project tasks and milestones</p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-(--bg-glass) border border-(--border-subtle)">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-(--bg-glass) border border-(--border-subtle)">
             <CheckSquare size={14} className="text-(--text-muted)" />
             <span className="text-xs font-medium text-(--text-primary)">64% Completed</span>
           </div>
@@ -28,9 +28,9 @@ export default function ProjectWorkspace() {
       </div>
 
       {/* Kanban Board Area */}
-      <div className="flex-1 overflow-x-auto p-6 flex gap-6">
+      <div className="flex-1 overflow-x-auto p-3 sm:p-6 flex gap-4 sm:gap-6">
         {/* TO DO Column */}
-        <div className="w-80 shrink-0 flex flex-col gap-4">
+        <div className="w-72 sm:w-80 shrink-0 flex flex-col gap-4">
           <div className="flex items-center justify-between px-2">
             <h3 className="font-bold text-sm text-(--text-secondary) flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-gray-400"></span> To Do
@@ -63,7 +63,7 @@ export default function ProjectWorkspace() {
         </div>
 
         {/* IN PROGRESS Column */}
-        <div className="w-80 shrink-0 flex flex-col gap-4">
+        <div className="w-72 sm:w-80 shrink-0 flex flex-col gap-4">
           <div className="flex items-center justify-between px-2">
             <h3 className="font-bold text-sm text-(--text-secondary) flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[color:oklch(0.58_0.22_var(--accent-hue))] animate-pulse"></span> In Progress
@@ -85,7 +85,7 @@ export default function ProjectWorkspace() {
         </div>
 
         {/* COMPLETED Column */}
-        <div className="w-80 shrink-0 flex flex-col gap-4">
+        <div className="w-72 sm:w-80 shrink-0 flex flex-col gap-4">
           <div className="flex items-center justify-between px-2">
             <h3 className="font-bold text-sm text-(--text-secondary) flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500"></span> Completed

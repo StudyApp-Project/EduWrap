@@ -347,6 +347,7 @@ export function RoomProvider({ children }) {
       icon: newRoomData.icon || '📚',
       tags: newRoomData.tags || [],
       memberCount: 1, // Just you
+      isPersonal: true,
       description: newRoomData.description,
       classrooms: [
         { id: `c-gen-${Date.now()}`, name: 'General Chat', type: 'discussion', unread: 0, typing: [] },
@@ -366,6 +367,18 @@ export function RoomProvider({ children }) {
     return newRoom.id;
   }, []);
 
+  const deleteRoom = useCallback((roomId) => {
+    setState(prev => {
+      const isDeletingActive = prev.activeRoomId === roomId;
+      return {
+        ...prev,
+        rooms: prev.rooms.filter(r => r.id !== roomId),
+        activeRoomId: isDeletingActive ? null : prev.activeRoomId,
+        activeClassroomId: isDeletingActive ? null : prev.activeClassroomId,
+      };
+    });
+  }, []);
+
   const activeRoom = state.rooms.find(r => r.id === state.activeRoomId);
   const activeClassroom = activeRoom?.classrooms.find(c => c.id === state.activeClassroomId);
 
@@ -377,7 +390,8 @@ export function RoomProvider({ children }) {
       setActiveRoom,
       setActiveClassroom,
       leaveRoom,
-      addRoom
+      addRoom,
+      deleteRoom
     }}>
       {children}
     </RoomContext.Provider>
