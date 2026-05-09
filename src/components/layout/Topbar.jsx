@@ -68,7 +68,7 @@ export default function Topbar({ onMenuClick, onOpenCommandPalette }) {
               <IconButton variant="ghost" aria-label="Notifications">
                 <Bell size={18} />
               </IconButton>
-              <div className="absolute top-1.5 right-1.5">
+              <div className="absolute top-0 right-0">
                 <CountBadge count={3} variant="error" size="sm" className="!text-[8px] !px-1 shadow-sm" />
               </div>
             </div>
