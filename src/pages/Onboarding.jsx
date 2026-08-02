@@ -27,7 +27,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [loading, setLoading] = useState(false);
-  const { login } = useUser();
+  const { updateUser } = useUser();
   const navigate = useNavigate();
 
   // Form State
@@ -58,7 +58,7 @@ export default function Onboarding() {
     );
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     setLoading(true);
     // Fire confetti
     confetti({
@@ -68,16 +68,24 @@ export default function Onboarding() {
       colors: ['#8b5cf6', '#3b82f6', '#10b981']
     });
 
-    setTimeout(() => {
-      login({
+    // Save onboarding data to Firestore
+    try {
+      await updateUser({
         name: name || 'Student',
-        email: 'user@example.com',
         avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${avatarIndex}`,
         subjects: selectedSubjects,
-        studyPreferences: selectedPrefs
+        studyPreferences: selectedPrefs,
+        onboardingCompleted: true,
+        xp: 100, // Welcome bonus
+        streak: 1,
       });
+    } catch (err) {
+      console.error('Failed to save onboarding data:', err);
+    }
+
+    setTimeout(() => {
       navigate('/dashboard');
-    }, 2500);
+    }, 2000);
   };
 
   const slideVariants = {

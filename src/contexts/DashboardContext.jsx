@@ -1,66 +1,166 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useUser } from './UserContext';
+import {
+  userDoc,
+  userTasks,
+  userNotifications,
+  roomsRef,
+  usersRef,
+  fetchDoc,
+  fetchQuery,
+  createDoc,
+  patchDoc,
+  removeDoc,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+  limit,
+  doc,
+  serverTimestamp,
+  timeAgo,
+} from '../firebase/firestore';
 
 const DashboardContext = createContext(null);
 
-const MOCK_TASKS = [
-  { id: '1', title: 'Finish Physics Chapter 4', completed: false, priority: 'high' },
-  { id: '2', title: 'Review Calculus Notes', completed: false, priority: 'medium' },
-  { id: '3', title: 'Reply to study group', completed: true, priority: 'low' },
-];
-
-const MOCK_ACTIVE_ROOMS = [
-  { id: 'r1', name: 'Physics 101 Midterm Prep', participants: 12, category: 'Science' },
-  { id: 'r2', name: 'CS50 Study Group', participants: 5, category: 'Programming' },
-];
-
-const MOCK_UPCOMING_SESSIONS = [
-  { id: 's1', title: 'Calculus Review', time: 'In 15 mins', members: 4 },
-  { id: 's2', title: 'Chemistry Lab Prep', time: 'Tomorrow, 2 PM', members: 8 },
-];
-
-const MOCK_RECENT_ACTIVITY = [
-  { id: 'a1', text: 'You earned the "Night Owl" badge', time: '2h ago', type: 'badge' },
-  { id: 'a2', text: 'Alex updated "Cell Biology Notes"', time: '4h ago', type: 'note' },
-  { id: 'a3', text: 'Completed "Thermodynamics Quiz" (92%)', time: 'Yesterday', type: 'quiz' },
-];
-
-const MOCK_LEADERBOARD = [
-  { id: 'l1', name: 'Sarah J.', xp: 12450, rank: 1 },
-  { id: 'l2', name: 'Alex C.', xp: 11200, rank: 2 },
-  { id: 'l3', name: 'You', xp: 10850, rank: 3 },
-  { id: 'l4', name: 'Mike T.', xp: 9800, rank: 4 },
-  { id: 'l5', name: 'Emma W.', xp: 9400, rank: 5 },
-];
-
-const MOCK_NOTIFICATIONS = [
-  { id: 'n1', text: 'Sarah invited you to "Data Structures"', read: false },
-  { id: 'n2', text: 'Chemistry Quiz deadline in 2 days', read: false },
-  { id: 'n3', text: 'You were mentioned in General Chat', read: true },
-];
-
 export function DashboardProvider({ children }) {
-  const [tasks, setTasks] = useState(MOCK_TASKS);
-  
-  const toggleTask = (id) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
+  const { user, isLoggedIn } = useUser();
+  const uid = user?.id;
 
-  const addTask = (title, priority = 'medium') => {
-    if (!title.trim()) return;
-    setTasks([{ id: Date.now().toString(), title, completed: false, priority }, ...tasks]);
-  };
+  const [tasks, setTasks] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [activeRooms, setActiveRooms] = useState([]);
+  const [upcomingSessions, setUpcomingSessions] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [dailyGoal, setDailyGoal] = useState({ target: 4, current: 0, streak: 0, xpToday: 0 });
+
+  // ─── REAL-TIME: USER TASKS ───
+  useEffect(() => {
+    if (!uid) return;
+
+    const q = query(userTasks(uid), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const items = snap.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        createdAt: timeAgo(d.data().createdAt),
+      }));
+      setTasks(items);
+    }, (err) => {
+      console.error('Tasks listener error:', err);
+    });
+
+    return () => unsubscribe();
+  }, [uid]);
+
+  // ─── REAL-TIME: NOTIFICATIONS ───
+  useEffect(() => {
+    if (!uid) return;
+
+    const q = query(userNotifications(uid), orderBy('createdAt', 'desc'), limit(10));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setNotifications(snap.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        time: timeAgo(d.data().createdAt),
+      })));
+    });
+
+    return () => unsubscribe();
+  }, [uid]);
+
+  // ─── LEADERBOARD: Top users by XP ───
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const q = query(usersRef, orderBy('xp', 'desc'), limit(10));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setLeaderboard(snap.docs.map((d, i) => ({
+        id: d.id,
+        name: d.data().name || 'Anonymous',
+        xp: d.data().xp || 0,
+        rank: i + 1,
+        avatar: d.data().avatar,
+      })));
+    });
+
+    return () => unsubscribe();
+  }, [isLoggedIn]);
+
+  // ─── USER'S ACTIVE ROOMS ───
+  useEffect(() => {
+    if (!uid) return;
+
+    const q = query(roomsRef, where('memberIds', 'array-contains', uid), limit(5));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setActiveRooms(snap.docs.map(d => ({
+        id: d.id,
+        name: d.data().name,
+        participants: d.data().memberCount || 0,
+        category: d.data().category,
+      })));
+    });
+
+    return () => unsubscribe();
+  }, [uid]);
+
+  // ─── DAILY GOAL derived from user data ───
+  useEffect(() => {
+    if (!user) return;
+    setDailyGoal({
+      target: 4,
+      current: Math.min(user.xp ? (user.xp % 500) / 125 : 0, 4),
+      streak: user.streak || 0,
+      xpToday: user.xp ? user.xp % 500 : 0,
+    });
+  }, [user]);
+
+  // ─── TASK CRUD ───
+  const toggleTask = useCallback(async (taskId) => {
+    if (!uid) return;
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    await patchDoc(doc(userTasks(uid), taskId), { completed: !task.completed });
+  }, [uid, tasks]);
+
+  const addTask = useCallback(async (title, priority = 'medium') => {
+    if (!uid || !title.trim()) return;
+    await createDoc(userTasks(uid), { title, completed: false, priority });
+  }, [uid]);
+
+  const deleteTask = useCallback(async (taskId) => {
+    if (!uid) return;
+    await removeDoc(doc(userTasks(uid), taskId));
+  }, [uid]);
+
+  // ─── NOTIFICATION MANAGEMENT ───
+  const markNotificationRead = useCallback(async (notifId) => {
+    if (!uid) return;
+    await patchDoc(doc(userNotifications(uid), notifId), { read: true });
+  }, [uid]);
+
+  const clearNotifications = useCallback(async () => {
+    if (!uid) return;
+    for (const n of notifications) {
+      await removeDoc(doc(userNotifications(uid), n.id));
+    }
+  }, [uid, notifications]);
 
   return (
     <DashboardContext.Provider value={{
       tasks,
       toggleTask,
       addTask,
-      activeRooms: MOCK_ACTIVE_ROOMS,
-      upcomingSessions: MOCK_UPCOMING_SESSIONS,
-      recentActivity: MOCK_RECENT_ACTIVITY,
-      leaderboard: MOCK_LEADERBOARD,
-      notifications: MOCK_NOTIFICATIONS,
-      dailyGoal: { target: 4, current: 2.5, streak: 12, xpToday: 450 },
+      deleteTask,
+      activeRooms,
+      upcomingSessions,
+      recentActivity,
+      leaderboard,
+      notifications,
+      markNotificationRead,
+      clearNotifications,
+      dailyGoal,
     }}>
       {children}
     </DashboardContext.Provider>

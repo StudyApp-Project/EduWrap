@@ -1,40 +1,66 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useUser } from './UserContext';
 import { getPDFText } from '../services/pdfService';
 import { generateQuizQuestions } from '../services/questionGenerator';
+import {
+  quizzesRef,
+  quizDoc,
+  createDoc,
+  patchDoc,
+  removeDoc,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+  serverTimestamp,
+} from '../firebase/firestore';
 
 const QuizContext = createContext(undefined);
 
 export function QuizProvider({ children }) {
-  const [quizzes, setQuizzes] = useState(() => {
-    const saved = localStorage.getItem('eduwrap_quizzes');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse quizzes from localStorage', e);
-      }
-    }
-    return [];
-  });
+  const { user, isLoggedIn } = useUser();
+  const uid = user?.id;
 
+  const [quizzes, setQuizzes] = useState([]);
   const [activeQuizId, setActiveQuizId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // ─── REAL-TIME: Load user's quizzes ───
   useEffect(() => {
-    localStorage.setItem('eduwrap_quizzes', JSON.stringify(quizzes));
-  }, [quizzes]);
+    if (!uid) {
+      setQuizzes([]);
+      setLoading(false);
+      return;
+    }
 
-  /**
-   * Generate a new quiz from selected PDFs.
-   */
+    const q = query(quizzesRef, where('userId', '==', uid), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      setQuizzes(snap.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        completedAt: d.data().completedAt?.toDate?.()?.toISOString() || d.data().completedAt,
+        createdAt: d.data().createdAt?.toDate?.()?.toISOString() || d.data().createdAt,
+      })));
+      setLoading(false);
+    }, (err) => {
+      console.error('Quizzes listener error:', err);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [uid]);
+
+  // ─── GENERATE QUIZ FROM PDFs ───
   const generateQuiz = async (selectedPdfIds, selectedPdfTitles, count) => {
-    let combinedText = '';
+    if (!uid) return null;
 
+    let combinedText = '';
     for (const id of selectedPdfIds) {
       try {
         const text = await getPDFText(id);
         if (text) combinedText += text + '\n\n';
       } catch (err) {
-        console.error("Failed to read text for pdf:", id, err);
+        console.error('Failed to read text for pdf:', id, err);
       }
     }
 
@@ -43,71 +69,64 @@ export function QuizProvider({ children }) {
       questions = generateQuizQuestions(combinedText, count);
     }
 
-    if (questions.length === 0) {
-      return null; // Can't generate quiz from image-only PDFs
-    }
+    if (questions.length === 0) return null;
 
     const title = selectedPdfTitles.length > 1
       ? `Quiz from ${selectedPdfTitles.length} PDFs`
       : `Quiz: ${selectedPdfTitles[0] || 'Custom'}`;
 
-    const newQuiz = {
-      id: crypto.randomUUID(),
+    const quizId = await createDoc(quizzesRef, {
+      userId: uid,
       title,
       description: `${questions.length} questions from your study materials.`,
       questions,
       totalQuestions: questions.length,
-      score: null,       // null = not attempted yet
-      answers: [],       // user's answers per question index
+      score: null,
+      answers: [],
       completedAt: null,
-      createdAt: new Date().toISOString(),
-    };
+    });
 
-    setQuizzes(prev => [newQuiz, ...prev]);
-    return newQuiz.id;
+    return quizId;
   };
 
-  /**
-   * Submit an answer for the active quiz.
-   */
-  const submitAnswer = (quizId, questionIndex, selectedOptionIndex) => {
-    setQuizzes(prev => prev.map(quiz => {
-      if (quiz.id !== quizId) return quiz;
-      const newAnswers = [...quiz.answers];
-      newAnswers[questionIndex] = selectedOptionIndex;
-      return { ...quiz, answers: newAnswers };
-    }));
+  // ─── SUBMIT ANSWER ───
+  const submitAnswer = async (quizId, questionIndex, selectedOptionIndex) => {
+    const quiz = quizzes.find(q => q.id === quizId);
+    if (!quiz) return;
+
+    const newAnswers = [...(quiz.answers || [])];
+    newAnswers[questionIndex] = selectedOptionIndex;
+
+    await patchDoc(quizDoc(quizId), { answers: newAnswers });
   };
 
-  /**
-   * Finish a quiz — calculate score.
-   */
-  const finishQuiz = (quizId) => {
-    setQuizzes(prev => prev.map(quiz => {
-      if (quiz.id !== quizId) return quiz;
-      const correct = quiz.questions.reduce((acc, q, i) => {
-        return acc + (quiz.answers[i] === q.correctIndex ? 1 : 0);
-      }, 0);
-      return {
-        ...quiz,
-        score: correct,
-        completedAt: new Date().toISOString(),
-      };
-    }));
+  // ─── FINISH QUIZ ───
+  const finishQuiz = async (quizId) => {
+    const quiz = quizzes.find(q => q.id === quizId);
+    if (!quiz) return;
+
+    const correct = quiz.questions.reduce((acc, q, i) => {
+      return acc + ((quiz.answers || [])[i] === q.correctIndex ? 1 : 0);
+    }, 0);
+
+    await patchDoc(quizDoc(quizId), {
+      score: correct,
+      completedAt: serverTimestamp(),
+    });
   };
 
-  /**
-   * Reset a quiz for retake.
-   */
-  const resetQuiz = (quizId) => {
-    setQuizzes(prev => prev.map(quiz => {
-      if (quiz.id !== quizId) return quiz;
-      return { ...quiz, score: null, answers: [], completedAt: null };
-    }));
+  // ─── RESET QUIZ ───
+  const resetQuiz = async (quizId) => {
+    await patchDoc(quizDoc(quizId), {
+      score: null,
+      answers: [],
+      completedAt: null,
+    });
   };
 
-  const deleteQuiz = (quizId) => {
-    setQuizzes(prev => prev.filter(q => q.id !== quizId));
+  // ─── DELETE QUIZ ───
+  const deleteQuiz = async (quizId) => {
+    await removeDoc(quizDoc(quizId));
     if (activeQuizId === quizId) setActiveQuizId(null);
   };
 
@@ -122,6 +141,7 @@ export function QuizProvider({ children }) {
         finishQuiz,
         resetQuiz,
         deleteQuiz,
+        loading,
       }}
     >
       {children}
